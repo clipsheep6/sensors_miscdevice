@@ -27,6 +27,7 @@
 #include "vibrator_agent.h"
 #include "vibrator_napi_error.h"
 #include "vibrator_napi_utils.h"
+#include "vibrator_pattern_js.h"
 
 #undef LOG_TAG
 #define LOG_TAG "VibratorJs"
@@ -59,6 +60,7 @@ struct VibrateInfo {
     int32_t fd = -1;
     int64_t offset = 0;
     int64_t length = -1;
+    VibratorPattern vibratorPattern;
 };
 
 static napi_value EmitAsyncWork(napi_value param, sptr<AsyncCallbackInfo> info)
@@ -171,6 +173,103 @@ static napi_value VibrateMode(napi_env env, napi_value args[], size_t argc)
     return nullptr;
 }
 
+static bool ParameterVibrateEvent(napi_env env, napi_value eventArray, int32_t index, VibratorEvent &event)
+{
+    napi_value element = nullptr;
+    CHKCF((napi_get_element(env, eventArray, index, &element) == napi_ok), "napi_get_element eventArray fail");
+    CHKCF(IsMatchType(env, element, napi_object), "Wrong argument type. napi_object or function expected");
+    int32_t type = 0;
+    CHKCF(GetPropertyInt32(env, element, "eventType", type), "Get type fail");
+    event.type = static_cast<VibratorEventType>(type);
+    CHKCF(GetPropertyInt32(env, element, "time", event.time), "Get time fail");
+    CHKCF(GetPropertyInt32(env, element, "duration", event.duration), "Get duration fail");
+    CHKCF(GetPropertyInt32(env, element, "intensity", event.intensity), "Get intensity fail");
+    CHKCF(GetPropertyInt32(env, element, "frequency", event.frequency), "Get frequency fail");
+    CHKCF(GetPropertyInt32(env, element, "index", event.index), "Get index fail");
+    bool exist = false;
+    napi_status status = napi_has_named_property(env, element, "points", &exist);
+    if ((status == napi_ok) && (exist)) {
+        napi_value pointsArray = nullptr;
+        CHKCF(GetPropertyItem(env, element, "points", pointsArray), "Get points fail");
+        CHKCF(IsMatchArrayType(env, pointsArray), "Wrong argument type. Napi array expected");
+        uint32_t pointsLength = 0;
+        CHKCF((napi_get_array_length(env, pointsArray, &pointsLength) == napi_ok),
+            "napi_get_array_length pointsArray fail");
+        event.pointNum = pointsLength;
+        VibratorCurvePoint *points = (VibratorCurvePoint *)malloc(sizeof(VibratorCurvePoint) * pointsLength);
+        if (points == nullptr) {
+            MISC_HILOGE("points is nullptr");
+            return false;
+        }
+        for (int32_t k = 0; k < pointsLength; ++k) {
+            napi_value pointsElement = nullptr;
+            CHKCF((napi_get_element(env, pointsArray, k, &pointsElement) == napi_ok),
+                "napi_get_element pointsArray fail");
+            CHKCF(IsMatchType(env, pointsElement, napi_object),
+                "Wrong argument type. napi_object or function expected");
+            CHKCF(GetPropertyInt32(env, pointsElement, "time", points[k].time), "Get points time fail");
+            CHKCF(GetPropertyInt32(env, pointsElement, "intensity", points[k].intensity),
+                "Get points intensity fail");
+            CHKCF(GetPropertyInt32(env, pointsElement, "frequency", points[k].frequency),
+                "Get points frequency fail");
+        }
+        event.points = points;
+    }
+    return true;
+}
+
+static bool ParameterVibratePattern(napi_env env, napi_value args[], VibrateInfo &info)
+{
+    napi_value patternBuilder = nullptr;
+    CHKCF(GetPropertyItem(env, args[0], "patternBuilder", patternBuilder), "Get patternBuilder fail");
+    CHKCF(IsMatchType(env, patternBuilder, napi_object), "Wrong argument type. Napi object expected");
+    CHKCF(GetPropertyInt32(env, patternBuilder, "time", info.vibratorPattern.time), "Get time fail");
+    napi_value eventArray = nullptr;
+    CHKCF(GetPropertyItem(env, patternBuilder, "events", eventArray), "Get events fail");
+    CHKCF(IsMatchArrayType(env, eventArray), "Wrong argument type. Napi array expected");
+    uint32_t length = 0;
+    CHKCF((napi_get_array_length(env, eventArray, &length) == napi_ok), "napi_get_array_length fail");
+    info.vibratorPattern.eventNum = length;
+    VibratorEvent *events = (VibratorEvent *)malloc(sizeof(VibratorEvent) * length);
+    if (events == nullptr) {
+        MISC_HILOGE("events is nullptr");
+        return false;
+    }
+    for (int32_t j = 0; j < length; ++j) {
+        if (!ParameterVibrateEvent(env, eventArray, j, events[j])) {
+            MISC_HILOGE("ParameterVibrateEvent failed");
+            return false;
+        }
+    }
+    info.vibratorPattern.events = events;
+    return true;
+}
+
+static void PrintVibratorPattern(VibratorPattern &vibratorPattern)
+{
+    if (vibratorPattern.events == nullptr) {
+        MISC_HILOGE("events is nullptr");
+        return;
+    }
+    MISC_HILOGD("PrintVibratorPattern, time:%{public}d, eventNum:%{public}d",
+        vibratorPattern.time, vibratorPattern.eventNum);
+    for (int32_t i = 0; i < vibratorPattern.eventNum; ++i) {
+        MISC_HILOGD("PrintVibratorPattern, type:%{public}d, time:%{public}d, duration:%{public}d, \
+            intensity:%{public}d, frequency:%{public}d, index:%{public}d, pointNum:%{public}d",
+            static_cast<int32_t>(vibratorPattern.events[i].type), vibratorPattern.events[i].time,
+            vibratorPattern.events[i].duration, vibratorPattern.events[i].intensity,
+            vibratorPattern.events[i].frequency, vibratorPattern.events[i].index, vibratorPattern.events[i].pointNum);
+
+        if (vibratorPattern.events[i].points != nullptr) {
+            VibratorCurvePoint *point = vibratorPattern.events[i].points;
+            for (int32_t j = 0; j < vibratorPattern.events[i].pointNum; ++j) {
+                MISC_HILOGD("PrintVibratorPattern, time:%{public}d, intensity:%{public}d, frequency:%{public}d",
+                    point[j].time, point[j].intensity, point[j].frequency);
+            }
+        }
+    }
+}
+
 bool ParseParameter(napi_env env, napi_value args[], size_t argc, VibrateInfo &info)
 {
     CHKCF((argc >= 2), "Wrong argument number");
@@ -190,6 +289,9 @@ bool ParseParameter(napi_env env, napi_value args[], size_t argc, VibrateInfo &i
         CHKCF((info.offset >= 0) && (info.offset <= fdSize), "The parameter of offset is invalid");
         info.length = fdSize - info.offset;
         GetPropertyInt64(env, hapticFd, "length", info.length);
+    } else if (info.type == "pattern") {
+        CHKCF(ParameterVibratePattern(env, args, info), "ParameterVibratePattern fail");
+        PrintVibratorPattern(info.vibratorPattern);
     }
     CHKCF(GetPropertyString(env, args[1], "usage", info.usage), "Get vibrate usage fail");
     return true;
@@ -206,11 +308,12 @@ bool SetUsage(const std::string &usage)
 
 int32_t StartVibrate(const VibrateInfo &info)
 {
+    CALL_LOG_ENTER;
     if (!SetUsage(info.usage)) {
         MISC_HILOGE("SetUsage fail");
         return PARAMETER_ERROR;
     }
-    if ((info.type != "time") && (info.type != "preset") && (info.type != "file")) {
+    if ((info.type != "time") && (info.type != "preset") && (info.type != "file") && (info.type != "pattern")) {
         MISC_HILOGE("Invalid vibrate type, type:%{public}s", info.type.c_str());
         return PARAMETER_ERROR;
     }
@@ -222,6 +325,8 @@ int32_t StartVibrate(const VibrateInfo &info)
         return StartVibrator(info.effectId.c_str());
     } else if (info.type == "file") {
         return PlayVibratorCustom(info.fd, info.offset, info.length);
+    } else if (info.type == "pattern") {
+        return PlayPattern(info.vibratorPattern);
     }
     return StartVibratorOnce(info.duration);
 }
@@ -236,6 +341,10 @@ static napi_value VibrateEffect(napi_env env, napi_value args[], size_t argc)
     sptr<AsyncCallbackInfo> asyncCallbackInfo = new (std::nothrow) AsyncCallbackInfo(env);
     CHKPP(asyncCallbackInfo);
     asyncCallbackInfo->error.code = StartVibrate(info);
+
+    if (info.vibratorPattern.events != nullptr) {
+        CHKCP(FreeVibratorPattern(info.vibratorPattern), "FreeVibratorPattern fail");
+    }
     if ((asyncCallbackInfo->error.code != SUCCESS) && (asyncCallbackInfo->error.code == PARAMETER_ERROR)) {
         ThrowErr(env, PARAMETER_ERROR, "parameters invalid");
         return nullptr;
@@ -248,6 +357,7 @@ static napi_value VibrateEffect(napi_env env, napi_value args[], size_t argc)
 
 static napi_value StartVibrate(napi_env env, napi_callback_info info)
 {
+    CALL_LOG_ENTER;
     CHKPP(env);
     CHKPP(info);
     size_t argc = 3;
@@ -390,6 +500,22 @@ static napi_value CreateEnumStopMode(const napi_env env, napi_value exports)
     return exports;
 }
 
+static napi_value CreateClassVibratePattern(const napi_env env, const napi_value exports)
+{
+    napi_property_descriptor clzDes[] = {
+    DECLARE_NAPI_FUNCTION("addContinuousEvent", VibratorPatternBuilder::AddContinuousEvent),
+    DECLARE_NAPI_FUNCTION("addTransientEvent", VibratorPatternBuilder::AddTransientEvent),
+    DECLARE_NAPI_FUNCTION("build", VibratorPatternBuilder::Build),
+    DECLARE_NAPI_FUNCTION("release", VibratorPatternBuilder::Release),
+    };
+    napi_value cons = nullptr;
+    NAPI_CALL(env, napi_define_class(env, "VibratorPatternBuilder", NAPI_AUTO_LENGTH,
+        VibratorPatternBuilder::VibratorPatternConstructor, nullptr, sizeof(clzDes) / sizeof(napi_property_descriptor),
+        clzDes, &cons));
+    NAPI_CALL(env, napi_set_named_property(env, exports, "VibratorPatternBuilder", cons));
+    return exports;
+}
+
 static napi_value CreateEnumEffectId(const napi_env env, const napi_value exports)
 {
     napi_value clockTime = nullptr;
@@ -416,6 +542,8 @@ static napi_value Init(napi_env env, napi_value exports)
     NAPI_CALL(env, napi_define_properties(env, exports, sizeof(desc) / sizeof(napi_property_descriptor), desc));
     NAPI_ASSERT_BASE(env, CreateEnumStopMode(env, exports) != nullptr, "Create enum stop mode fail", exports);
     NAPI_ASSERT_BASE(env, CreateEnumEffectId(env, exports) != nullptr, "Create enum effect id fail", exports);
+    NAPI_ASSERT_BASE(env, CreateClassVibratePattern(env, exports) != nullptr,
+        "CreateClassVibratePattern fail", exports);
     return exports;
 }
 
