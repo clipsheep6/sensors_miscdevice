@@ -125,8 +125,7 @@ int32_t Cancel();
  * @brief Set the usage of vibration.
  *
  * @param usage Indicates the vibration usage, which is described in {@link vibrator_agent_type.h},for
- * example:
- * {@link USAGE_ALARM}: Describes the vibration is used for alarm.
+ * example:{@link USAGE_ALARM}: Describes the vibration is used for alarm.
  *
  * @since 9
  */
@@ -145,8 +144,8 @@ bool IsHdHapticSupported();
  * @brief Query whether a vibration effect is supported.
  *
  * @param effectId Indicates the preset vibration effect, which is described in {@link vibrator_agent_type.h}, for
- * example:
- * {@link VIBRATOR_TYPE_CLOCK_TIMER}: Describes the vibration effect of the vibrator when a user adjusts the timer.
+ * example:{@link VIBRATOR_TYPE_CLOCK_TIMER}: Describes the vibration effect of the vibrator when a user adjusts the
+ * timer.
  * @param state Indicates a pointer to the query result.
  * @return Returning 0 indicates success; otherwise, it indicates failure.
  *
@@ -202,8 +201,7 @@ bool SetParameters(const VibratorParameter &parameter);
  * @brief Control the vibrator to perform vibration with a preset vibration effect at a certain intensity.
  *
  * @param effectId Indicates the preset vibration effect, which is described in {@link vibrator_agent_type.h}, for
- * example:
- * {@link VIBRATOR_TYPE_HARD}: Describes the hard vibration effect of the vibrator.
+ * example:{@link VIBRATOR_TYPE_HARD}: Describes the hard vibration effect of the vibrator.
  * @param intensity Indicates the intensity of vibration, ranging from 1 to 100.
  * @return Returns <b>0</b> if the vibrator vibrates as expected; otherwise indicates failure.
  *
