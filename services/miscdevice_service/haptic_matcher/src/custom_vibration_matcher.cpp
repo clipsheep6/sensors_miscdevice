@@ -175,23 +175,31 @@ void CustomVibrationMatcher::PreProcessEvent(VibrateEvent &event)
 std::vector<VibrateCurvePoint> CustomVibrationMatcher::MergeCurve(const std::vector<VibrateCurvePoint> &curveLeft,
     const std::vector<VibrateCurvePoint> &curveRight)
 {
+    if (curveLeft.empty()) {
+        return curveRight;
+    }
+    if (curveRight.empty()) {
+        return curveLeft;
+    }
     int32_t overlapLeft = std::max(curveLeft.front().time, curveRight.front().time);
     int32_t overlapRight = std::min(curveLeft.back().time, curveRight.back().time);
     std::vector<VibrateCurvePoint> newCurve;
     size_t i = 0;
     size_t j = 0;
     while (i < curveLeft.size() || j < curveRight.size()) {
-        while (i < curveLeft.size() && ((curveLeft[i].time < overlapLeft) || (curveLeft[i].time > overlapRight) || (j == curveRight.size()))) {
+        while (i < curveLeft.size() && ((curveLeft[i].time < overlapLeft) || (curveLeft[i].time > overlapRight) ||
+              (j == curveRight.size()))) {
             newCurve.push_back(curveLeft[i]);
             ++i;
         }
-        while (j < curveRight.size() && ((curveRight[j].time < overlapLeft) || (curveRight[j].time > overlapRight) || (i == curveLeft.size()))) {
+        while (j < curveRight.size() && ((curveRight[j].time < overlapLeft) || (curveRight[j].time > overlapRight) ||
+              (i == curveLeft.size()))) {
             newCurve.push_back(curveRight[j]);
             ++j;
         }
         VibrateCurvePoint newCurvePoint;
         if (i < curveLeft.size() && j < curveRight.size()) {
-            if (curveLeft[i].time < curveRight[j].time) {
+            if ((curveLeft[i].time < curveRight[j].time) && (j > 0)) {
                 int32_t intensity = Interpolation(curveRight[j - 1].time, curveRight[j].time,
                     curveRight[j - 1].intensity, curveRight[j].intensity, curveLeft[i].time);
                 int32_t frequency = Interpolation(curveRight[j - 1].time, curveRight[j].time,
@@ -200,7 +208,7 @@ std::vector<VibrateCurvePoint> CustomVibrationMatcher::MergeCurve(const std::vec
                 newCurvePoint.intensity = std::max(curveLeft[i].intensity, intensity);
                 newCurvePoint.frequency = (curveLeft[i].frequency + frequency) / 2;
                 ++i;
-            } else if (curveLeft[i].time > curveRight[j].time) {
+            } else if ((curveLeft[i].time > curveRight[j].time) && (i > 0)) {
                 int32_t intensity = Interpolation(curveLeft[i - 1].time, curveLeft[i].time,
                     curveLeft[i - 1].intensity, curveLeft[i].intensity, curveRight[j].time);
                 int32_t frequency = Interpolation(curveLeft[i - 1].time, curveLeft[i].time,
