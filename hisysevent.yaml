@@ -37,3 +37,10 @@ MISC_SERVICE_EXCEPTION:
   __BASE: {type: FAULT, level: MINOR, desc: sensor service exception}
   PKG_NAME: {type: STRING, desc: package name}
   ERROR_CODE: {type: INT32, desc: error code}
+
+MISC_DURATION_EXCEPTION:
+  __BASE: {type: STATISTIC, level: MINOR, desc: sensor service exception}
+  CURRENTTIME: {type: STRING, desc: current time}
+  PID: {type: INT32, desc: pid}
+  DURATION: {type: INT32, desc: duration}
+  PKG_NAME: {type: STRING, desc: package name}
