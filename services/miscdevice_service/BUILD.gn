@@ -90,7 +90,7 @@ ohos_shared_library("libmiscdevice_service") {
 }
 
 #############################################################################
-ohos_shared_library("libmiscdevice_service_static") {
+ohos_static_library("libmiscdevice_service_static") {
   sources = [
     "haptic_matcher/src/custom_vibration_matcher.cpp",
     "hdi_connection/adapter/src/compatible_light_connection.cpp",
