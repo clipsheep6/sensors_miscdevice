@@ -18,5 +18,5 @@
 
 #define FUZZ_PROJECT_NAME "startvibrator_fuzzer"
 
-#endif
+#endif // SENSOR_DISABLE_FUZZER_H
 

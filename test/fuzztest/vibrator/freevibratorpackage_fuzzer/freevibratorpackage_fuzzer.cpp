@@ -15,11 +15,6 @@
 
 #include "freevibratorpackage_fuzzer.h"
 
-#include <cstddef>
-#include <cstdint>
-#include <cstring>
-#include <string>
-
 #include "accesstoken_kit.h"
 #include "nativetoken_kit.h"
 #include "securec.h"
@@ -30,6 +25,23 @@
 namespace OHOS {
 using namespace Security::AccessToken;
 using Security::AccessToken::AccessTokenID;
+namespace {
+constexpr size_t DATA_MIN_SIZE = 20;
+} // namespace
+
+template<class T>
+size_t GetObject(const uint8_t *data, size_t size, T &object)
+{
+    size_t objectSize = sizeof(object);
+    if (objectSize > size) {
+        return 0;
+    }
+    errno_t ret = memcpy_s(&object, objectSize, data, objectSize);
+    if (ret != EOK) {
+        return 0;
+    }
+    return objectSize;
+}
 
 void SetUpTestCase()
 {
@@ -54,20 +66,22 @@ void SetUpTestCase()
     delete[] perms;
 }
 
-bool FreeVibratorPackageTest(const uint8_t *data, size_t size)
+void FreeVibratorPackageFuzzTest(const uint8_t *data, size_t size)
 {
+    if (data == nullptr || size < DATA_MIN_SIZE) {
+        return;
+    }
     SetUpTestCase();
     VibratorPackage package { 0 };
-    int32_t ret = OHOS::Sensors::FreeVibratorPackage(package);
-    if (ret == 0) {
-        return false;
-    }
-    return true;
+    size_t startPos = 0;
+    startPos += GetObject<int32_t>(data + startPos, size - startPos, package.patternNum);
+    GetObject<int32_t>(data + startPos, size - startPos, package.packageDuration);
+    OHOS::Sensors::FreeVibratorPackage(package);
 }
 } // namespace OHOS
 
 extern "C" int LLVMFuzzerTestOneInput(const uint8_t *data, size_t size)
 {
-    OHOS::FreeVibratorPackageTest(data, size);
+    OHOS::FreeVibratorPackageFuzzTest(data, size);
     return 0;
 }

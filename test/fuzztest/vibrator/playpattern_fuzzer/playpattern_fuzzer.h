@@ -18,4 +18,4 @@
 
 #define FUZZ_PROJECT_NAME "playpattern_fuzzer"
 
-#endif
+#endif // PLAY_PATTERN_FUZZER_H

@@ -1,0 +1,30 @@
+{
+    "deviceConfig": {},
+    "module": {
+      "package": "com.example.myapplication",
+      "name": ".MyApplication",
+      "deviceType": [
+        "default",
+        "tablet",
+        "2in1"
+      ],
+      "distro": {
+        "deliveryWithInstall": true,
+        "moduleName": "entry",
+        "moduleType": "entry"
+      },
+      "reqPermissions": [
+        {
+          "name": "ohos.permission.VIBRATE",
+          "reason": "",
+          "usedScene": {
+            "ability": [
+              ".MainAbility"
+            ],
+            "when": "inuse"
+          }
+        }
+      ]
+    }
+  }
+  

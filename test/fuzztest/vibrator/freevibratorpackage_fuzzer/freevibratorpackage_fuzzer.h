@@ -18,4 +18,4 @@
 
 #define FUZZ_PROJECT_NAME "freevibratorpackage_fuzzer"
 
-#endif
+#endif // FREE_VIBRATOR_PACKAGE_FUZZER_H

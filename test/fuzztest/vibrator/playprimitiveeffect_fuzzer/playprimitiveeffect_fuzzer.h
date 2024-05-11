@@ -18,5 +18,5 @@
 
 #define FUZZ_PROJECT_NAME "playprimitiveeffect_fuzzer"
 
-#endif
+#endif // PLAY_PRIMITIVE_EFFECT_FUZZER_H
 

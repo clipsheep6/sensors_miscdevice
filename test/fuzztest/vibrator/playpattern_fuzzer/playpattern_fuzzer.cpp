@@ -31,6 +31,20 @@ namespace OHOS {
 using namespace Security::AccessToken;
 using Security::AccessToken::AccessTokenID;
 
+template<class T>
+size_t GetObject(const uint8_t *data, size_t size, T &object)
+{
+    size_t objectSize = sizeof(object);
+    if (objectSize > size) {
+        return 0;
+    }
+    errno_t ret = memcpy_s(&object, objectSize, data, objectSize);
+    if (ret != EOK) {
+        return 0;
+    }
+    return objectSize;
+}
+
 void SetUpTestCase()
 {
     const char **perms = new (std::nothrow) const char *[1];
@@ -45,7 +59,7 @@ void SetUpTestCase()
         .dcaps = nullptr,
         .perms = perms,
         .acls = nullptr,
-        .processName = "FreeVibratorPackageTest",
+        .processName = "PlayPatternFuzzTest",
         .aplStr = "system_core",
     };
     uint64_t tokenId = GetAccessTokenId(&infoInstance);
@@ -57,6 +71,10 @@ void SetUpTestCase()
 bool PlayPatternFuzzTest(const uint8_t *data, size_t size)
 {
     VibratorPattern vibratorPattern { 0 };
+    size_t startPos = 0;
+    startPos += GetObject<int32_t>(data + startPos, size - startPos, vibratorPattern.time);
+    startPos += GetObject<int32_t>(data + startPos, size - startPos, vibratorPattern.eventNum);
+    GetObject<int32_t>(data + startPos, size - startPos, vibratorPattern.patternDuration);
     int32_t ret = OHOS::Sensors::PlayPattern(vibratorPattern);
     return ret == 0;
 }

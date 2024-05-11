@@ -18,4 +18,4 @@
 
 #define FUZZ_PROJECT_NAME "getdelaytime_fuzzer"
 
-#endif
+#endif // GET_DELAY_TIME_FUZZER_H

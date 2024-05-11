@@ -33,6 +33,21 @@ using Security::AccessToken::AccessTokenID;
 namespace {
 constexpr size_t U32_AT_SIZE = 4;
 } // namespace
+
+template<class T>
+size_t GetObject(const uint8_t *data, size_t size, T &object)
+{
+    size_t objectSize = sizeof(object);
+    if (objectSize > size) {
+        return 0;
+    }
+    errno_t ret = memcpy_s(&object, objectSize, data, objectSize);
+    if (ret != EOK) {
+        return 0;
+    }
+    return objectSize;
+}
+
 void SetUpTestCase()
 {
     const char **perms = new (std::nothrow) const char *[1];
@@ -55,13 +70,18 @@ void SetUpTestCase()
     AccessTokenKit::ReloadNativeTokenInfo();
     delete[] perms;
 }
+
 bool SetParametersFuzzTest(const uint8_t *data, size_t size)
 {
-    SetUpTestCase();
     if (data == nullptr || size < U32_AT_SIZE) {
         return false;
     }
+    SetUpTestCase();
     VibratorParameter parameter { 0 };
+    size_t startPos = 0;
+    startPos += GetObject<int32_t>(data + startPos, size - startPos, parameter.intensity);
+    startPos += GetObject<int32_t>(data + startPos, size - startPos, parameter.frequency);
+    GetObject<int32_t>(data + startPos, size - startPos, parameter.reserved);
     return OHOS::Sensors::SetParameters(parameter);
 }
 } // namespace OHOS

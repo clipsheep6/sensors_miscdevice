@@ -18,5 +18,5 @@
 
 #define FUZZ_PROJECT_NAME "setusage_fuzzer"
 
-#endif
+#endif // SENSOR_DISABLE_FUZZER_H
 
