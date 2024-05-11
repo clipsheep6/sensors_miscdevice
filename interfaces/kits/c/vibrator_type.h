@@ -28,15 +28,15 @@ extern "C" {
 * @since 11
 */
 typedef enum Vibrator_ErrorCode : int32_t {
-    /**< Permission verification failed. */
+    /**< @error Permission verification failed. */
     PERMISSION_DENIED = 201,
-    /**< Parameter check failed. For example, a mandatory parameter is not passed in,
+    /**< @error Parameter check failed. For example, a mandatory parameter is not passed in,
      * or the parameter type passed in is incorrect. */
     PARAMETER_ERROR = 401,
-    /**< The API is not supported on the device. The device supports the corresponding SysCap,
+    /**< @error The API is not supported on the device. The device supports the corresponding SysCap,
      * but does not support certain APIs in this SysCap. */
     UNSUPPORTED = 801,
-    /**< The operation on the device failed. */
+    /**< @error The operation on the device failed. */
     DEVICE_OPERATION_FAILED = 14600101,
 } Vibrator_ErrorCode;
 

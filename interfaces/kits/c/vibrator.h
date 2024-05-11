@@ -44,8 +44,13 @@ extern "C" {
  *
  * @param duration - Vibration duration, in milliseconds.
  * @param attribute - Vibration attribute. For details, see {@link Vibrator_Attribute}.
- * @return Returns <b>0</b> if the operation is successful; returns a non-zero value otherwise.
- * For details, see {@link Vibrator_ErrorCode}.
+ * @return Returns <b>0</b> if the operation is successful; returns the following error code otherwise.
+ * {@link PERMISSION_DENIED} Permission verification failed.\n
+ * {@link PARAMETER_ERROR} Parameter check failed. For example, a mandatory parameter is not passed in,
+ * or the parameter type passed in is incorrect.\n
+ * {@link UNSUPPORTED} The API is not supported on the device. The device supports the corresponding SysCap,
+ * but does not support certain APIs in this SysCap.\n
+ * {@link DEVICE_OPERATION_FAILED} The operation on the device failed.\n
  * @permission ohos.permission.VIBRATE
  *
  * @since 11
@@ -58,8 +63,13 @@ int32_t OH_Vibrator_PlayVibration(int32_t duration, Vibrator_Attribute attribute
  * @param fileDescription - File descriptor of the custom vibration effect.
  * For details, see {@link Vibrator_FileDescription}.
  * @param vibrateAttribute - Vibration attribute. For details, see {@link Vibrator_Attribute}.
- * @return Returns <b>0</b> if the operation is successful; returns a non-zero value otherwise.
- * For details, see {@link Vibrator_ErrorCode}.
+ * @return Returns <b>0</b> if the operation is successful; returns the following error code otherwise.
+ * {@link PERMISSION_DENIED} Permission verification failed.\n
+ * {@link PARAMETER_ERROR} Parameter check failed. For example, a mandatory parameter is not passed in,
+ * or the parameter type passed in is incorrect.\n
+ * {@link UNSUPPORTED} The API is not supported on the device. The device supports the corresponding SysCap,
+ * but does not support certain APIs in this SysCap.\n
+ * {@link DEVICE_OPERATION_FAILED} The operation on the device failed.\n
  * @permission ohos.permission.VIBRATE
  *
  * @since 11
@@ -71,8 +81,13 @@ int32_t OH_Vibrator_PlayVibrationCustom(Vibrator_FileDescription fileDescription
  * @brief Stop the motor vibration according to the input mode.
  *
  * @permission ohos.permission.VIBRATE
- * @return Returns <b>0</b> if the operation is successful; returns a non-zero value otherwise.
- * For details, see {@link Vibrator_ErrorCode}.
+ * @return Returns <b>0</b> if the operation is successful; returns the following error code otherwise.
+ * {@link PERMISSION_DENIED} Permission verification failed.\n
+ * {@link PARAMETER_ERROR} Parameter check failed. For example, a mandatory parameter is not passed in,
+ * or the parameter type passed in is incorrect.\n
+ * {@link UNSUPPORTED} The API is not supported on the device. The device supports the corresponding SysCap,
+ * but does not support certain APIs in this SysCap.\n
+ * {@link DEVICE_OPERATION_FAILED} The operation on the device failed.\n
  * @permission ohos.permission.VIBRATE
  *
  * @since 11
