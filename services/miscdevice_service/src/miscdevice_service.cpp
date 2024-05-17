@@ -20,6 +20,7 @@
 #include <string_ex.h>
 
 #include "death_recipient_template.h"
+#include "hisysevent.h"
 #include "system_ability_definition.h"
 
 #include "sensors_errors.h"
@@ -40,6 +41,7 @@
 
 namespace OHOS {
 namespace Sensors {
+using namespace OHOS::HiviewDFX;
 namespace {
 auto g_miscdeviceService = MiscdeviceDelayedSpSingleton<MiscdeviceService>::GetInstance();
 const bool G_REGISTER_RESULT = SystemAbility::MakeAndRegisterAbility(g_miscdeviceService.GetRefPtr());
@@ -242,6 +244,9 @@ int32_t MiscdeviceService::Vibrate(int32_t vibratorId, int32_t timeOut, int32_t 
     MISC_HILOGI("Vibrate currentTime:%{public}s, pid:%{public}d, vibratorId:%{public}d,"
         "duration:%{public}d, package:%{public}s", curVibrateTime.c_str(), info.pid, vibratorId,
         info.duration, packageName.c_str());
+    HiSysEventWrite(HiviewDFX::HiSysEvent::Domain::MISCDEVICE, "MISC_DURATION_EXCEPTION",
+        HiSysEvent::EventType::STATISTIC, "CURRENTTIME", curVibrateTime.c_str(), "PID", info.pid,
+        "DURATION", info.duration, "PKG_NAME", packageName.c_str());
     return NO_ERROR;
 }
 
@@ -308,6 +313,9 @@ int32_t MiscdeviceService::PlayVibratorEffect(int32_t vibratorId, const std::str
     StartVibrateThread(info);
     MISC_HILOGI("PlayVibratorEffect currentTime:%{public}s, pid:%{public}d, duration:%{public}d,"
         "package:%{public}s", curEffectTime.c_str(), info.pid, info.duration, packageName.c_str());
+    HiSysEventWrite(HiviewDFX::HiSysEvent::Domain::MISCDEVICE, "MISC_DURATION_EXCEPTION",
+        HiSysEvent::EventType::STATISTIC, "CURRENTTIME", curEffectTime.c_str(), "PID", info.pid,
+        "DURATION", info.duration, "PKG_NAME", packageName.c_str());
     return NO_ERROR;
 }
 
@@ -427,6 +435,9 @@ int32_t MiscdeviceService::PlayVibratorCustom(int32_t vibratorId, const RawFileD
     StartVibrateThread(info);
     MISC_HILOGI("PlayVibratorCustom currentTime:%{public}s, pid:%{public}d, duration:%{public}d,"
         "package:%{public}s", curCustomTime.c_str(), info.pid, package.packageDuration, packageName.c_str());
+    HiSysEventWrite(HiviewDFX::HiSysEvent::Domain::MISCDEVICE, "MISC_DURATION_EXCEPTION",
+        HiSysEvent::EventType::STATISTIC, "CURRENTTIME", curCustomTime.c_str(), "PID", info.pid,
+        "DURATION", info.duration, "PKG_NAME", packageName.c_str());
     return NO_ERROR;
 }
 #endif // OHOS_BUILD_ENABLE_VIBRATOR_CUSTOM
@@ -592,6 +603,9 @@ int32_t MiscdeviceService::PlayPattern(const VibratePattern &pattern, int32_t us
     StartVibrateThread(info);
     MISC_HILOGI("PlayVibratorCustom currentTime:%{public}s, pid:%{public}d, duration:%{public}d,"
         "package:%{public}s", curPatternTime.c_str(), info.pid, pattern.patternDuration, packageName.c_str());
+    HiSysEventWrite(HiviewDFX::HiSysEvent::Domain::MISCDEVICE, "MISC_DURATION_EXCEPTION",
+        HiSysEvent::EventType::STATISTIC, "CURRENTTIME", curPatternTime.c_str(), "PID", info.pid,
+        "DURATION", info.duration, "PKG_NAME", packageName.c_str());
     return ERR_OK;
 }
 
