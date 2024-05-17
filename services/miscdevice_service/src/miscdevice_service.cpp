@@ -20,6 +20,7 @@
 #include <string_ex.h>
 
 #include "death_recipient_template.h"
+#include "ipc_skeleton.h"
 #include "system_ability_definition.h"
 
 #include "sensors_errors.h"
@@ -226,7 +227,7 @@ int32_t MiscdeviceService::Vibrate(int32_t vibratorId, int32_t timeOut, int32_t 
     VibrateInfo info = {
         .mode = VIBRATE_TIME,
         .packageName = packageName,
-        .pid = GetCallingPid(),
+        .pid = IPCSkeleton::GetCallingRealPid(),
         .uid = GetCallingUid(),
         .usage = usage,
         .duration = timeOut
@@ -291,7 +292,7 @@ int32_t MiscdeviceService::PlayVibratorEffect(int32_t vibratorId, const std::str
     VibrateInfo info = {
         .mode = VIBRATE_PRESET,
         .packageName = packageName,
-        .pid = GetCallingPid(),
+        .pid = IPCSkeleton::GetCallingRealPid(),
         .uid = GetCallingUid(),
         .usage = usage,
         .duration = effectInfo->duration,
@@ -335,7 +336,7 @@ void MiscdeviceService::StopVibrateThread()
         std::string curStopTime;
         VibrateCurrentTime(curStopTime);
         MISC_HILOGI("StopVibrateThread currentTime:%{public}s, pid:%{public}d, package:%{public}s",
-            curStopTime.c_str(), GetCallingPid(), packageName.c_str());
+            curStopTime.c_str(), IPCSkeleton::GetCallingRealPid(), packageName.c_str());
         vibratorThread_->SetExitStatus(true);
         vibratorThread_->WakeUp();
         vibratorThread_->NotifyExitSync();
@@ -412,7 +413,7 @@ int32_t MiscdeviceService::PlayVibratorCustom(int32_t vibratorId, const RawFileD
     VibrateInfo info = {
         .mode = VIBRATE_CUSTOM_COMPOSITE_EFFECT,
         .packageName = packageName,
-        .pid = GetCallingPid(),
+        .pid = IPCSkeleton::GetCallingRealPid(),
         .uid = GetCallingUid(),
         .usage = usage,
         .package = package,
@@ -564,7 +565,7 @@ int32_t MiscdeviceService::PlayPattern(const VibratePattern &pattern, int32_t us
     VibrateInfo info = {
         .mode = VIBRATE_BUTT,
         .packageName = packageName,
-        .pid = GetCallingPid(),
+        .pid = IPCSkeleton::GetCallingRealPid(),
         .uid = GetCallingUid(),
         .usage = usage,
     };
@@ -642,7 +643,7 @@ void MiscdeviceService::MergeVibratorParmeters(const VibrateParameter &parameter
 
 int32_t MiscdeviceService::TransferClientRemoteObject(const sptr<IRemoteObject> &vibratorServiceClient)
 {
-    auto clientPid = GetCallingPid();
+    auto clientPid = IPCSkeleton::GetCallingRealPid();
     if (clientPid < 0) {
         MISC_HILOGE("ClientPid is invalid, clientPid:%{public}d", clientPid);
         return ERROR;
@@ -768,7 +769,7 @@ int32_t MiscdeviceService::PlayPrimitiveEffect(int32_t vibratorId, const std::st
     VibrateInfo info = {
         .mode = VIBRATE_BUTT,
         .packageName = packageName,
-        .pid = GetCallingPid(),
+        .pid = IPCSkeleton::GetCallingRealPid(),
         .uid = GetCallingUid(),
         .usage = usage,
         .effect = effect,
