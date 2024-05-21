@@ -45,6 +45,33 @@ AsyncCallbackInfo::~AsyncCallbackInfo()
     }
 }
 
+bool FreeVibratorPattern(VibratorPattern &vibratorPattern)
+{
+    CALL_LOG_ENTER;
+    int32_t eventSize = vibratorPattern.eventNum;
+    if ((eventSize <= 0) || (vibratorPattern.events == nullptr)) {
+        MISC_HILOGW("events is not need to free, events size:%{public}d", eventSize);
+        return false;
+    }
+    auto events = vibratorPattern.events;
+    for (int32_t j = 0; j < eventSize; ++j) {
+        if (events[j].points != nullptr) {
+            free(events[j].points);
+            events[j].points = nullptr;
+        }
+    }
+    free(events);
+    events = nullptr;
+    return true;
+}
+
+bool IsMatchArrayType(const napi_env &env, const napi_value &value)
+{
+    bool result = false;
+    CHKCF((napi_is_array(env, value, &result) == napi_ok), "napi_is_array fail");
+    return result;
+}
+
 bool IsMatchType(const napi_env &env, const napi_value &value, const napi_valuetype &type)
 {
     napi_valuetype paramType = napi_undefined;
@@ -74,6 +101,16 @@ bool GetInt32Value(const napi_env &env, const napi_value &value, int32_t &result
     CHKCF(napi_typeof(env, value, &valuetype) == napi_ok, "napi_typeof failed");
     CHKCF((valuetype == napi_number), "Wrong argument type. Number expected");
     CHKCF(napi_get_value_int32(env, value, &result) == napi_ok, "napi_get_value_int32 failed");
+    return true;
+}
+
+bool GetDoubleValue(const napi_env &env, const napi_value &value, double &result)
+{
+    CALL_LOG_ENTER;
+    napi_valuetype valuetype = napi_undefined;
+    CHKCF(napi_typeof(env, value, &valuetype) == napi_ok, "napi_typeof failed");
+    CHKCF((valuetype == napi_number), "Wrong argument type. Number expected");
+    CHKCF(napi_get_value_double(env, value, &result) == napi_ok, "napi_get_value_double failed");
     return true;
 }
 

@@ -36,6 +36,7 @@ ohos_shared_library("vibrator") {
     "$SUBSYSTEM_DIR/frameworks/js/napi/vibrator/src/vibrator_js.cpp",
     "$SUBSYSTEM_DIR/frameworks/js/napi/vibrator/src/vibrator_napi_error.cpp",
     "$SUBSYSTEM_DIR/frameworks/js/napi/vibrator/src/vibrator_napi_utils.cpp",
+    "$SUBSYSTEM_DIR/frameworks/js/napi/vibrator/src/vibrator_pattern_js.cpp",
   ]
 
   deps = [

@@ -25,6 +25,7 @@
 #include "refbase.h"
 
 #include "sensors_errors.h"
+#include "vibrator_agent_type.h"
 
 namespace OHOS {
 namespace Sensors {
@@ -61,9 +62,12 @@ public:
 using ConstructResultFunc = bool(*)(const napi_env &env, sptr<AsyncCallbackInfo> asyncCallbackInfo,
     napi_value result[], int32_t length);
 
+bool FreeVibratorPattern(VibratorPattern &vibratorPattern);
+bool IsMatchArrayType(const napi_env &env, const napi_value &value);
 bool IsMatchType(const napi_env &env, const napi_value &value, const napi_valuetype &type);
 bool GetNapiInt32(const napi_env &env, const int32_t value, napi_value &result);
 bool GetInt32Value(const napi_env &env, const napi_value &value, int32_t &result);
+bool GetDoubleValue(const napi_env &env, const napi_value &value, double &result);
 bool GetInt64Value(const napi_env &env, const napi_value &value, int64_t &result);
 bool GetStringValue(const napi_env &env, const napi_value &value, string &result);
 bool GetPropertyItem(const napi_env &env, const napi_value &value, const std::string &type, napi_value &item);
