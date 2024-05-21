@@ -20,6 +20,9 @@
 #include <string_ex.h>
 
 #include "death_recipient_template.h"
+#include "iservice_registry.h"
+#include "mem_mgr_client.h"
+#include "mem_mgr_proxy.h"
 #include "system_ability_definition.h"
 
 #include "sensors_errors.h"
@@ -60,6 +63,10 @@ constexpr int32_t VIBRATOR_ID = 0;
 constexpr int32_t BASE_YEAR = 1900;
 constexpr int32_t BASE_MON = 1;
 constexpr int32_t CONVERSION_RATE = 1000;
+constexpr int32_t SA_ID = 3602;
+constexpr int32_t SYSTEM_STATUS_START = 1;
+constexpr int32_t SYSTEM_STATUS_STOP = 0;
+constexpr int32_t SYSTEM_PROCESS_TYPE = 1;
 VibratorCapacity g_capacity;
 #ifdef OHOS_BUILD_ENABLE_VIBRATOR_CUSTOM
 const std::string PHONE_TYPE = "phone";
@@ -84,6 +91,15 @@ MiscdeviceService::~MiscdeviceService()
 void MiscdeviceService::OnDump()
 {
     MISC_HILOGI("Ondump is invoked");
+}
+
+void MiscdeviceService::OnAddSystemAbility(int32_t systemAbilityId, const std::string &deviceId)
+{
+    MISC_HILOGI("OnAddSystemAbility systemAbilityId:%{public}d", systemAbilityId);
+    if (systemAbilityId == MEMORY_MANAGER_SA_ID) {
+        Memory::MemMgrClient::GetInstance().NotifyProcessStatus(getpid(),
+            SYSTEM_PROCESS_TYPE, SYSTEM_STATUS_START, SA_ID);
+    }
 }
 
 void MiscdeviceService::OnStart()
@@ -114,6 +130,7 @@ void MiscdeviceService::OnStart()
         ret.first->second = vibratorExist_;
     }
     state_ = MiscdeviceServiceState::STATE_RUNNING;
+    AddSystemAbilityListener(MEMORY_MANAGER_SA_ID);
 }
 
 void MiscdeviceService::OnStartFuzz()
@@ -206,6 +223,8 @@ void MiscdeviceService::OnStop()
     if (ret != ERR_OK) {
         MISC_HILOGE("Destroy hdi connection fail");
     }
+    Memory::MemMgrClient::GetInstance().NotifyProcessStatus(getpid(),
+        SYSTEM_PROCESS_TYPE, SYSTEM_STATUS_STOP, SA_ID);
 }
 
 bool MiscdeviceService::ShouldIgnoreVibrate(const VibrateInfo &info)

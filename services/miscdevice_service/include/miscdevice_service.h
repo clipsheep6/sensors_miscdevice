@@ -98,6 +98,7 @@ private:
     void SaveClientPid(const sptr<IRemoteObject> &vibratorServiceClient, int32_t pid);
     int32_t FindClientPid(const sptr<IRemoteObject> &vibratorServiceClient);
     void DestroyClientPid(const sptr<IRemoteObject> &vibratorServiceClient);
+    void OnAddSystemAbility(int32_t systemAbilityId, const std::string &deviceId) override;
     VibratorHdiConnection &vibratorHdiConnection_ = VibratorHdiConnection::GetInstance();
     LightHdiConnection &lightHdiConnection_ = LightHdiConnection::GetInstance();
     bool lightExist_;
