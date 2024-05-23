@@ -89,7 +89,7 @@ private:
     void StartVibrateThread(VibrateInfo info);
     void StopVibrateThread();
     bool ShouldIgnoreVibrate(const VibrateInfo &info);
-    void VibrateCurrentTime(std::string &startTime);
+    std::string GetCurrentTime();
     void MergeVibratorParmeters(const VibrateParameter &parameter, VibratePackage &package);
     bool CheckVibratorParmeters(const VibrateParameter &parameter);
     bool InitLightList();

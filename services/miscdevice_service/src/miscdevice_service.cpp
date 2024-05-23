@@ -234,9 +234,6 @@ bool MiscdeviceService::ShouldIgnoreVibrate(const VibrateInfo &info)
 
 int32_t MiscdeviceService::Vibrate(int32_t vibratorId, int32_t timeOut, int32_t usage)
 {
-    std::string packageName = GetPackageName(GetCallingTokenID());
-    MISC_HILOGD("Start vibrator time, time:%{public}d, usage:%{public}d, package:%{public}s",
-        timeOut, usage, packageName.c_str());
     if ((timeOut <= MIN_VIBRATOR_TIME) || (timeOut > MAX_VIBRATOR_TIME)
         || (usage >= USAGE_MAX) || (usage < 0)) {
         MISC_HILOGE("Invalid parameter");
@@ -244,7 +241,7 @@ int32_t MiscdeviceService::Vibrate(int32_t vibratorId, int32_t timeOut, int32_t 
     }
     VibrateInfo info = {
         .mode = VIBRATE_TIME,
-        .packageName = packageName,
+        .packageName = GetPackageName(GetCallingTokenID()),
         .pid = GetCallingPid(),
         .uid = GetCallingUid(),
         .usage = usage,
@@ -255,19 +252,16 @@ int32_t MiscdeviceService::Vibrate(int32_t vibratorId, int32_t timeOut, int32_t 
         MISC_HILOGE("Vibration is ignored and high priority is vibrating");
         return ERROR;
     }
-    std::string curVibrateTime;
     StartVibrateThread(info);
-    VibrateCurrentTime(curVibrateTime);
-    MISC_HILOGI("Vibrate currentTime:%{public}s, pid:%{public}d, vibratorId:%{public}d,"
-        "duration:%{public}d, package:%{public}s", curVibrateTime.c_str(), info.pid, vibratorId,
-        info.duration, packageName.c_str());
+    std::string curVibrateTime = GetCurrentTime();
+    MISC_HILOGI("Start vibrator, currentTime:%{public}s, package:%{public}s, pid:%{public}d, usage:%{public}d,"
+        "vibratorId:%{public}d, duration:%{public}d", curVibrateTime.c_str(), info.packageName.c_str(), info.pid,
+        info.usage, vibratorId, info.duration);
     return NO_ERROR;
 }
 
 int32_t MiscdeviceService::StopVibrator(int32_t vibratorId)
 {
-    std::string packageName = GetPackageName(GetCallingTokenID());
-    MISC_HILOGD("Stop vibrator, package:%{public}s", packageName.c_str());
     std::lock_guard<std::mutex> lock(vibratorThreadMutex_);
 #ifdef OHOS_BUILD_ENABLE_VIBRATOR_CUSTOM
     if ((vibratorThread_ == nullptr) || (!vibratorThread_->IsRunning() &&
@@ -285,15 +279,16 @@ int32_t MiscdeviceService::StopVibrator(int32_t vibratorId)
     }
 #endif // OHOS_BUILD_ENABLE_VIBRATOR_CUSTOM
     StopVibrateThread();
+    std::string packageName = GetPackageName(GetCallingTokenID());
+    std::string curVibrateTime = GetCurrentTime();
+    MISC_HILOGI("Stop vibrator, currentTime:%{public}s, package:%{public}s, pid:%{public}d, vibratorId:%{public}d",
+        curVibrateTime.c_str(), packageName.c_str(), GetCallingPid(), vibratorId);
     return NO_ERROR;
 }
 
 int32_t MiscdeviceService::PlayVibratorEffect(int32_t vibratorId, const std::string &effect,
     int32_t count, int32_t usage)
 {
-    std::string packageName = GetPackageName(GetCallingTokenID());
-    MISC_HILOGD("Start vibrator effect, effect:%{public}s, count:%{public}d, usage:%{public}d, package:%{public}s",
-        effect.c_str(), count, usage, packageName.c_str());
     if ((count < MIN_VIBRATOR_COUNT) || (count > MAX_VIBRATOR_COUNT) || (usage >= USAGE_MAX) || (usage < 0)) {
         MISC_HILOGE("Invalid parameter");
         return PARAMETER_ERROR;
@@ -309,7 +304,7 @@ int32_t MiscdeviceService::PlayVibratorEffect(int32_t vibratorId, const std::str
     }
     VibrateInfo info = {
         .mode = VIBRATE_PRESET,
-        .packageName = packageName,
+        .packageName = GetPackageName(GetCallingTokenID()),
         .pid = GetCallingPid(),
         .uid = GetCallingUid(),
         .usage = usage,
@@ -322,11 +317,11 @@ int32_t MiscdeviceService::PlayVibratorEffect(int32_t vibratorId, const std::str
         MISC_HILOGE("Vibration is ignored and high priority is vibrating");
         return ERROR;
     }
-    std::string curEffectTime;
-    VibrateCurrentTime(curEffectTime);
     StartVibrateThread(info);
-    MISC_HILOGI("PlayVibratorEffect currentTime:%{public}s, pid:%{public}d, duration:%{public}d,"
-        "package:%{public}s", curEffectTime.c_str(), info.pid, info.duration, packageName.c_str());
+    std::string curVibrateTime = GetCurrentTime();
+    MISC_HILOGI("Start vibrator, currentTime:%{public}s, package:%{public}s, pid:%{public}d, usage:%{public}d,"
+        "vibratorId:%{public}d, duration:%{public}d, effect:%{public}s, count:%{public}d", curVibrateTime.c_str(),
+        info.packageName.c_str(), info.pid, info.usage, vibratorId, info.duration, info.effect.c_str(), info.count);
     return NO_ERROR;
 }
 
@@ -348,13 +343,7 @@ void MiscdeviceService::StartVibrateThread(VibrateInfo info)
 
 void MiscdeviceService::StopVibrateThread()
 {
-    std::string packageName = GetPackageName(GetCallingTokenID());
-    MISC_HILOGD("Stop vibrator,package:%{public}s", packageName.c_str());
     if ((vibratorThread_ != nullptr) && (vibratorThread_->IsRunning())) {
-        std::string curStopTime;
-        VibrateCurrentTime(curStopTime);
-        MISC_HILOGI("StopVibrateThread currentTime:%{public}s, pid:%{public}d, package:%{public}s",
-            curStopTime.c_str(), GetCallingPid(), packageName.c_str());
         vibratorThread_->SetExitStatus(true);
         vibratorThread_->WakeUp();
         vibratorThread_->NotifyExitSync();
@@ -364,8 +353,6 @@ void MiscdeviceService::StopVibrateThread()
 
 int32_t MiscdeviceService::StopVibrator(int32_t vibratorId, const std::string &mode)
 {
-    std::string packageName = GetPackageName(GetCallingTokenID());
-    MISC_HILOGD("Stop vibrator, mode:%{public}s, package:%{public}s", mode.c_str(), packageName.c_str());
     std::lock_guard<std::mutex> lock(vibratorThreadMutex_);
     if ((vibratorThread_ == nullptr) || (!vibratorThread_->IsRunning())) {
         MISC_HILOGD("No vibration, no need to stop");
@@ -377,6 +364,10 @@ int32_t MiscdeviceService::StopVibrator(int32_t vibratorId, const std::string &m
         return ERROR;
     }
     StopVibrateThread();
+    std::string packageName = GetPackageName(GetCallingTokenID());
+    std::string curVibrateTime = GetCurrentTime();
+    MISC_HILOGI("Stop vibrator, currentTime:%{public}s, package:%{public}s, pid:%{public}d, vibratorId:%{public}d,"
+        "mode:%{public}s", curVibrateTime.c_str(), packageName.c_str(), GetCallingPid(), vibratorId, mode.c_str());
     return NO_ERROR;
 }
 
@@ -391,25 +382,28 @@ int32_t MiscdeviceService::IsSupportEffect(const std::string &effect, bool &stat
     return NO_ERROR;
 }
 
-void MiscdeviceService::VibrateCurrentTime(std::string &startTime)
+std::string MiscdeviceService::GetCurrentTime()
 {
     timespec curTime;
     clock_gettime(CLOCK_REALTIME, &curTime);
     struct tm *timeinfo = localtime(&(curTime.tv_sec));
-    CHKPV(timeinfo);
-    startTime.append(std::to_string(timeinfo->tm_year + BASE_YEAR)).append("-")
+    std::string currentTime;
+    if (timeinfo == nullptr) {
+        MISC_HILOGE("timeinfo is null");
+        return currentTime;
+    }
+    currentTime.append(std::to_string(timeinfo->tm_year + BASE_YEAR)).append("-")
         .append(std::to_string(timeinfo->tm_mon + BASE_MON)).append("-").append(std::to_string(timeinfo->tm_mday))
         .append(" ").append(std::to_string(timeinfo->tm_hour)).append(":").append(std::to_string(timeinfo->tm_min))
         .append(":").append(std::to_string(timeinfo->tm_sec)).append(".")
         .append(std::to_string(curTime.tv_nsec / (CONVERSION_RATE * CONVERSION_RATE)));
+    return currentTime;
 }
 
 #ifdef OHOS_BUILD_ENABLE_VIBRATOR_CUSTOM
 int32_t MiscdeviceService::PlayVibratorCustom(int32_t vibratorId, const RawFileDescriptor &rawFd, int32_t usage,
     const VibrateParameter &parameter)
 {
-    std::string packageName = GetPackageName(GetCallingTokenID());
-    MISC_HILOGD("Start vibrator custom, usage:%{public}d, package:%{public}s", usage, packageName.c_str());
     if (!(g_capacity.isSupportHdHaptic || g_capacity.isSupportPresetMapping || g_capacity.isSupportTimeDelay)) {
         MISC_HILOGE("The device does not support this operation");
         return IS_NOT_SUPPORTED;
@@ -430,7 +424,7 @@ int32_t MiscdeviceService::PlayVibratorCustom(int32_t vibratorId, const RawFileD
     package.Dump();
     VibrateInfo info = {
         .mode = VIBRATE_CUSTOM_COMPOSITE_EFFECT,
-        .packageName = packageName,
+        .packageName = GetPackageName(GetCallingTokenID()),
         .pid = GetCallingPid(),
         .uid = GetCallingUid(),
         .usage = usage,
@@ -441,11 +435,11 @@ int32_t MiscdeviceService::PlayVibratorCustom(int32_t vibratorId, const RawFileD
         MISC_HILOGE("Vibration is ignored and high priority is vibrating");
         return ERROR;
     }
-    std::string curCustomTime;
-    VibrateCurrentTime(curCustomTime);
     StartVibrateThread(info);
-    MISC_HILOGI("PlayVibratorCustom currentTime:%{public}s, pid:%{public}d, duration:%{public}d,"
-        "package:%{public}s", curCustomTime.c_str(), info.pid, package.packageDuration, packageName.c_str());
+    std::string curVibrateTime = GetCurrentTime();
+    MISC_HILOGI("Start vibrator, currentTime:%{public}s, package:%{public}s, pid:%{public}d, usage:%{public}d,"
+        "vibratorId:%{public}d, duration:%{public}d", curVibrateTime.c_str(), info.packageName.c_str(), info.pid,
+        info.usage, vibratorId, package.packageDuration);
     return NO_ERROR;
 }
 #endif // OHOS_BUILD_ENABLE_VIBRATOR_CUSTOM
@@ -564,8 +558,6 @@ int32_t MiscdeviceService::Dump(int32_t fd, const std::vector<std::u16string> &a
 int32_t MiscdeviceService::PlayPattern(const VibratePattern &pattern, int32_t usage,
     const VibrateParameter &parameter)
 {
-    std::string packageName = GetPackageName(GetCallingTokenID());
-    MISC_HILOGD("Start vibrator pattern, usage:%{public}d, package:%{public}s", usage, packageName.c_str());
     if ((usage >= USAGE_MAX) || (usage < 0) || (!CheckVibratorParmeters(parameter))) {
         MISC_HILOGE("Invalid parameter, usage:%{public}d", usage);
         return PARAMETER_ERROR;
@@ -582,7 +574,7 @@ int32_t MiscdeviceService::PlayPattern(const VibratePattern &pattern, int32_t us
     package.Dump();
     VibrateInfo info = {
         .mode = VIBRATE_BUTT,
-        .packageName = packageName,
+        .packageName = GetPackageName(GetCallingTokenID()),
         .pid = GetCallingPid(),
         .uid = GetCallingUid(),
         .usage = usage,
@@ -606,11 +598,11 @@ int32_t MiscdeviceService::PlayPattern(const VibratePattern &pattern, int32_t us
         MISC_HILOGE("Vibration is ignored and high priority is vibrating");
         return ERROR;
     }
-    std::string curPatternTime;
-    VibrateCurrentTime(curPatternTime);
     StartVibrateThread(info);
-    MISC_HILOGI("PlayVibratorCustom currentTime:%{public}s, pid:%{public}d, duration:%{public}d,"
-        "package:%{public}s", curPatternTime.c_str(), info.pid, pattern.patternDuration, packageName.c_str());
+    std::string curVibrateTime = GetCurrentTime();
+    MISC_HILOGI("Start vibrator, currentTime:%{public}s, package:%{public}s, pid:%{public}d, usage:%{public}d,"
+        "duration:%{public}d", curVibrateTime.c_str(), info.packageName.c_str(), info.pid, info.usage,
+        pattern.patternDuration);
     return ERR_OK;
 }
 
@@ -768,9 +760,6 @@ void MiscdeviceService::DestroyClientPid(const sptr<IRemoteObject> &vibratorServ
 int32_t MiscdeviceService::PlayPrimitiveEffect(int32_t vibratorId, const std::string &effect,
     int32_t intensity, int32_t usage)
 {
-    std::string packageName = GetPackageName(GetCallingTokenID());
-    MISC_HILOGD("Start vibrator effect, effect:%{public}s, intensity:%{public}d, usage:%{public}d, package:%{public}s",
-        effect.c_str(), intensity, usage, packageName.c_str());
     if ((intensity <= INTENSITY_MIN) || (intensity > INTENSITY_MAX) || (usage >= USAGE_MAX) || (usage < 0)) {
         MISC_HILOGE("Invalid parameter");
         return PARAMETER_ERROR;
@@ -786,10 +775,11 @@ int32_t MiscdeviceService::PlayPrimitiveEffect(int32_t vibratorId, const std::st
     }
     VibrateInfo info = {
         .mode = VIBRATE_BUTT,
-        .packageName = packageName,
+        .packageName = GetPackageName(GetCallingTokenID()),
         .pid = GetCallingPid(),
         .uid = GetCallingUid(),
         .usage = usage,
+        .duration = effectInfo->duration,
         .effect = effect,
     };
     std::lock_guard<std::mutex> lock(vibratorThreadMutex_);
@@ -798,6 +788,10 @@ int32_t MiscdeviceService::PlayPrimitiveEffect(int32_t vibratorId, const std::st
         return ERROR;
     }
     StartVibrateThread(info);
+    std::string curVibrateTime = GetCurrentTime();
+    MISC_HILOGI("Start vibrator, currentTime:%{public}s, package:%{public}s, pid:%{public}d, usage:%{public}d,"
+        "vibratorId:%{public}d, duration:%{public}d, effect:%{public}s", curVibrateTime.c_str(),
+        info.packageName.c_str(), info.pid, info.usage, vibratorId, info.duration, info.effect.c_str());
     return vibratorHdiConnection_.StartByIntensity(effect, intensity);
 }
 
