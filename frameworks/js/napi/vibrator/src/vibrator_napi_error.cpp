@@ -44,9 +44,9 @@ std::optional<std::string> GetNapiError(int32_t errorCode, const std::string &co
     return std::nullopt;
 }
 
-void ThrowErr(const napi_env &env, const int32_t errCode, const std::string &printMsg1, const std::string &printMsg2)
+void ThrowErr(const napi_env &env, const int32_t errCode, const std::string &printMsg, const std::string &correctMsg)
 {
-    MISC_HILOGE("cff Message1:%{public}s, Message2:%{public}s,code:%{public}d", printMsg1.c_str(), printMsg2.c_str(), errCode);
+    MISC_HILOGE("correctMsg:%{public}s, correctMsg:%{public}s, code:%{public}d", printMsg.c_str(), correctMsg.c_str(), errCode);
     std::string codeMsg;
     auto msg = GetNapiError(errCode, codeMsg);
     if (!msg) {

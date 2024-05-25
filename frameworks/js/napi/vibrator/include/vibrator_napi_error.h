@@ -32,7 +32,7 @@ const std::map<int32_t, std::string> ERROR_MESSAGES = {
 };
 
 napi_value CreateBusinessError(const napi_env &env, const int32_t errCode, const std::string &errMessage);
-void ThrowErr(const napi_env &env, const int32_t errCode,  const std::string &printMsg1, const std::string &printMsg2);
+void ThrowErr(const napi_env &env, const int32_t errCode,  const std::string &printMsg, const std::string &correctMsg);
 std::optional<std::string> GetNapiError(int32_t errorCode, const std::string &codeMsg);
 }  // namespace Sensors
 }  // namespace OHOS
