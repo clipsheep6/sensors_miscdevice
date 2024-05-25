@@ -482,5 +482,5 @@ int32_t MiscdeviceServiceProxy::GetVibratorCapacity(VibratorCapacity &capacity)
     capacity = vibratorCapacity.value();
     return ret;
 }
-}  // namespace Sensors
-}  // namespace OHOS
+} // namespace Sensors
+} // namespace OHOS

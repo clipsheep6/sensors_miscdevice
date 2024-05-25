@@ -56,6 +56,6 @@ public:
         int32_t usage) = 0;
     virtual int32_t GetVibratorCapacity(VibratorCapacity &capacity) = 0;
 };
-}  // namespace Sensors
-}  // namespace OHOS
-#endif  // I_MISCDEVICE_SERVICE_H
+} // namespace Sensors
+} // namespace OHOS
+#endif // I_MISCDEVICE_SERVICE_H

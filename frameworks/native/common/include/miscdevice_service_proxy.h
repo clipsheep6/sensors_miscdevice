@@ -52,6 +52,6 @@ private:
     DISALLOW_COPY_AND_MOVE(MiscdeviceServiceProxy);
     static inline BrokerDelegator<MiscdeviceServiceProxy> delegator_;
 };
-}  // namespace Sensors
-}  // namespace OHOS
-#endif  // MISCDEVICE_SERVICE_PROXY_H
+} // namespace Sensors
+} // namespace OHOS
+#endif // MISCDEVICE_SERVICE_PROXY_H

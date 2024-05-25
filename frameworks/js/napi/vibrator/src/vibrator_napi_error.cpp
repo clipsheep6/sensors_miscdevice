@@ -57,5 +57,5 @@ void ThrowErr(const napi_env &env, const int32_t errCode, const std::string &pri
     napi_throw(env, error);
     napi_close_handle_scope(env, scope);
 }
-}  // namespace Sensors
-}  // namespace OHOS
+} // namespace Sensors
+} // namespace OHOS
