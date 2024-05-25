@@ -258,7 +258,7 @@ static napi_value StartVibrate(napi_env env, napi_callback_info info)
     napi_status status = napi_get_cb_info(env, info, &argc, args, &thisArg, nullptr);
     if (status != napi_ok || argc < PARAMETER_TWO) {
         ThrowErr(env, PARAMETER_ERROR, "Parameter verification failed",
-            "parameter must be greater than  3");
+            "parameter must be greater than 3");
         return nullptr;
     }
     if (!IsMatchType(env, args[0], napi_object) || !IsMatchType(env, args[1], napi_object)) {
