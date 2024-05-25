@@ -263,7 +263,7 @@ static napi_value StartVibrate(napi_env env, napi_callback_info info)
     }
     if (!IsMatchType(env, args[0], napi_object) || !IsMatchType(env, args[1], napi_object)) {
         ThrowErr(env, PARAMETER_ERROR, "Parameter verification failed",
-            "args[0] and args[1] should is napi_object");
+            "args[0] and args[1] should be napi_object");
         return nullptr;
     }
     return VibrateEffect(env, args, argc);
@@ -322,7 +322,7 @@ static napi_value Stop(napi_env env, napi_callback_info info)
     if (argc >= 1 && IsMatchType(env, args[0], napi_string)) {
         string mode;
         if (!GetStringValue(env, args[0], mode)) {
-            ThrowErr(env, PARAMETER_ERROR, "Parameter verification failed", "args[0] should is napi_object");
+            ThrowErr(env, PARAMETER_ERROR, "Parameter verification failed", "args[0] should be napi_object");
             return nullptr;
         }
         sptr<AsyncCallbackInfo> asyncCallbackInfo = new (std::nothrow) AsyncCallbackInfo(env);
@@ -390,7 +390,7 @@ static napi_value IsSupportEffect(napi_env env, napi_callback_info info)
     }
     string effectId;
     if (!GetStringValue(env, args[0], effectId)) {
-        ThrowErr(env, PARAMETER_ERROR, "Parameter verification failed", "args[0] should is effectId");
+        ThrowErr(env, PARAMETER_ERROR, "Parameter verification failed", "args[0] should be effectId");
         return nullptr;
     }
     sptr<AsyncCallbackInfo> asyncCallbackInfo = new (std::nothrow) AsyncCallbackInfo(env);
