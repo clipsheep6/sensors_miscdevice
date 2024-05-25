@@ -187,7 +187,8 @@ bool ConvertErrorToResult(const napi_env &env, sptr<AsyncCallbackInfo> asyncCall
 {
     CHKPF(asyncCallbackInfo);
     int32_t code = asyncCallbackInfo->error.code;
-    auto msg = GetNapiError(code);
+    std::string codeMsg = asyncCallbackInfo->error.message;
+    auto msg = GetNapiError(code, codeMsg);
     if (!msg) {
         MISC_HILOGE("ErrCode:%{public}d is invalid", code);
         return false;

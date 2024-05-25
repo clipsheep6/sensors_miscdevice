@@ -26,14 +26,14 @@ namespace OHOS {
 namespace Sensors {
 const std::map<int32_t, std::string> ERROR_MESSAGES = {
     {DEVICE_OPERATION_FAILED,  "Device operation failed."},
-    {PERMISSION_DENIED,  "Permission denied."},
-    {PARAMETER_ERROR,  "The parameter invalid."},
+    {PERMISSION_DENIED, "Permission denied. An attempt was made to %s forbidden by permission:%s."},
+    {PARAMETER_ERROR, "Parameter error. The type of %s must be %s."},
     {IS_NOT_SUPPORTED,  "Capability not supported."},
 };
 
 napi_value CreateBusinessError(const napi_env &env, const int32_t errCode, const std::string &errMessage);
-void ThrowErr(const napi_env &env, const int32_t errCode,  const std::string &printMsg);
-std::optional<std::string> GetNapiError(int32_t errorCode);
+void ThrowErr(const napi_env &env, const int32_t errCode,  const std::string &printMsg1, const std::string &printMsg2);
+std::optional<std::string> GetNapiError(int32_t errorCode, const std::string &codeMsg);
 }  // namespace Sensors
 }  // namespace OHOS
 #endif // VIBRATOR_NAPI_ERROR_H

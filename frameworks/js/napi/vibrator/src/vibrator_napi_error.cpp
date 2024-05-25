@@ -17,6 +17,7 @@
 
 #include <optional>
 
+#include "securec.h"
 #undef LOG_TAG
 #define LOG_TAG "VibratorNapiError"
 
@@ -34,7 +35,7 @@ napi_value CreateBusinessError(const napi_env &env, const int32_t errCode, const
     return businessError;
 }
 
-std::optional<std::string> GetNapiError(int32_t errorCode)
+std::optional<std::string> GetNapiError(int32_t errorCode, const std::string &codeMsg)
 {
     auto iter = ERROR_MESSAGES.find(errorCode);
     if (iter != ERROR_MESSAGES.end()) {
@@ -43,10 +44,11 @@ std::optional<std::string> GetNapiError(int32_t errorCode)
     return std::nullopt;
 }
 
-void ThrowErr(const napi_env &env, const int32_t errCode, const std::string &printMsg)
+void ThrowErr(const napi_env &env, const int32_t errCode, const std::string &printMsg1, const std::string &printMsg2)
 {
-    MISC_HILOGE("Message:%{public}s, code:%{public}d", printMsg.c_str(), errCode);
-    auto msg = GetNapiError(errCode);
+    MISC_HILOGE("cff Message1:%{public}s, Message2:%{public}s,code:%{public}d", printMsg1.c_str(), printMsg2.c_str(), errCode);
+    std::string codeMsg;
+    auto msg = GetNapiError(errCode, codeMsg);
     if (!msg) {
         MISC_HILOGE("ErrCode:%{public}d is invalid", errCode);
         return;
