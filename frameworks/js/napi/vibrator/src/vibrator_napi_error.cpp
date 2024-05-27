@@ -35,29 +35,29 @@ napi_value CreateBusinessError(const napi_env &env, const int32_t errCode, const
     return businessError;
 }
 
-std::optional<std::string> GetNapiError(int32_t errorCode, const std::string &codeMsg)
+bool GetNapiError(int32_t errorCode, std::string &codeMsg)
 {
     auto iter = ERROR_MESSAGES.find(errorCode);
-    if (iter != ERROR_MESSAGES.end()) {
-        return iter->second;
+    if (iter == ERROR_MESSAGES.end()) {
+        return false;
     }
-    return std::nullopt;
+    codeMsg = iter->second;
+    return true;
 }
 
 void ThrowErr(const napi_env &env, const int32_t errCode, const std::string &printMsg, const std::string &correctMsg)
 {
     MISC_HILOGE("correctMsg:%{public}s, correctMsg:%{public}s, code:%{public}d", printMsg.c_str(), correctMsg.c_str(), errCode);
     std::string codeMsg;
-    auto msg = GetNapiError(errCode, codeMsg);
-    if (!msg) {
-        MISC_HILOGE("ErrCode:%{public}d is invalid", errCode);
-        return;
+    if (GetNapiError(errCode, codeMsg)) {
+        MISC_HILOGE("Message:%{public}s", codeMsg.c_str());
+        char buf[300];
+        if (sprintf_s(buf, sizeof(buf), codeMsg.c_str(), printMsg.c_str(), correctMsg.c_str()) > 0 ) {
+            CreateBusinessError(env, errCode, buf);
+        } else {
+            MISC_HILOGE("Failed to convert string type to char type");
+        }
     }
-    napi_handle_scope scope = nullptr;
-    napi_open_handle_scope(env, &scope);
-    napi_value error = CreateBusinessError(env, errCode, msg.value());
-    napi_throw(env, error);
-    napi_close_handle_scope(env, scope);
 }
 }  // namespace Sensors
 }  // namespace OHOS

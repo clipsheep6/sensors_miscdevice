@@ -232,14 +232,14 @@ static napi_value VibrateEffect(napi_env env, napi_value args[], size_t argc)
 {
     VibrateInfo info;
     if (!ParseParameter(env, args, argc, info)) {
-        ThrowErr(env, PARAMETER_ERROR, "Parameter verification failed", "parameter fail");
+        ThrowErr(env, PARAMETER_ERROR, "parameter verification failed", "enter the correct parameters");
         return nullptr;
     }
     sptr<AsyncCallbackInfo> asyncCallbackInfo = new (std::nothrow) AsyncCallbackInfo(env);
     CHKPP(asyncCallbackInfo);
     asyncCallbackInfo->error.code = StartVibrate(info);
     if ((asyncCallbackInfo->error.code != SUCCESS) && (asyncCallbackInfo->error.code == PARAMETER_ERROR)) {
-        ThrowErr(env, PARAMETER_ERROR, "Parameter verification failed", "parameters invalid");
+        ThrowErr(env, PARAMETER_ERROR, "parameter verification failed", "correct range");
         return nullptr;
     }
     if (argc >= PARAMETER_THREE && IsMatchType(env, args[2], napi_function)) {
@@ -257,13 +257,12 @@ static napi_value StartVibrate(napi_env env, napi_callback_info info)
     napi_value thisArg = nullptr;
     napi_status status = napi_get_cb_info(env, info, &argc, args, &thisArg, nullptr);
     if (status != napi_ok || argc < PARAMETER_TWO) {
-        ThrowErr(env, PARAMETER_ERROR, "Parameter verification failed",
-            "parameter must be greater than 3");
+        ThrowErr(env, PARAMETER_ERROR, "parameter verification failed",
+            "parameter number greater than 3");
         return nullptr;
     }
     if (!IsMatchType(env, args[0], napi_object) || !IsMatchType(env, args[1], napi_object)) {
-        ThrowErr(env, PARAMETER_ERROR, "Parameter verification failed",
-            "args[0] and args[1] should be napi_object");
+        ThrowErr(env, PARAMETER_ERROR, "parameter verification failed", "napi_object");
         return nullptr;
     }
     return VibrateEffect(env, args, argc);
@@ -278,7 +277,7 @@ static napi_value Vibrate(napi_env env, napi_callback_info info)
     napi_value thisArg = nullptr;
     napi_status status = napi_get_cb_info(env, info, &argc, args, &thisArg, nullptr);
     if (status != napi_ok) {
-        ThrowErr(env, PARAMETER_ERROR, "Parameter verification failed", "napi_get_cb_info fail");
+        ThrowErr(env, PARAMETER_ERROR, "parameter verification failed", "enter the correct parameters");
         return nullptr;
     }
     if (argc >= 1 && IsMatchType(env, args[0], napi_number)) {
@@ -297,7 +296,7 @@ static napi_value Cancel(napi_env env, napi_callback_info info)
     napi_value thisArg = nullptr;
     napi_status status = napi_get_cb_info(env, info, &argc, args, &thisArg, nullptr);
     if (status != napi_ok) {
-        ThrowErr(env, PARAMETER_ERROR, "Parameter verification failed", "napi_get_cb_info fail");
+        ThrowErr(env, PARAMETER_ERROR, "parameter verification failed", "enter the correct parameters");
         return nullptr;
     }
     sptr<AsyncCallbackInfo> asyncCallbackInfo = new (std::nothrow) AsyncCallbackInfo(env);
@@ -316,20 +315,20 @@ static napi_value Stop(napi_env env, napi_callback_info info)
     napi_value thisArg = nullptr;
     napi_status status = napi_get_cb_info(env, info, &argc, args, &thisArg, nullptr);
     if (status != napi_ok) {
-        ThrowErr(env, PARAMETER_ERROR, "Parameter verification failed", "napi_get_cb_info fail");
+        ThrowErr(env, PARAMETER_ERROR, "parameter verification failed", "enter the correct parameters");
         return nullptr;
     }
     if (argc >= 1 && IsMatchType(env, args[0], napi_string)) {
         string mode;
         if (!GetStringValue(env, args[0], mode)) {
-            ThrowErr(env, PARAMETER_ERROR, "Parameter verification failed", "args[0] should be napi_object");
+            ThrowErr(env, PARAMETER_ERROR, "parameter verification failed", "mode");
             return nullptr;
         }
         sptr<AsyncCallbackInfo> asyncCallbackInfo = new (std::nothrow) AsyncCallbackInfo(env);
         CHKPP(asyncCallbackInfo);
         asyncCallbackInfo->error.code = StopVibrator(mode.c_str());
         if ((asyncCallbackInfo->error.code != SUCCESS) && (asyncCallbackInfo->error.code == PARAMETER_ERROR)) {
-            ThrowErr(env, PARAMETER_ERROR, "Parameter verification failed", "Parameters invalid");
+            ThrowErr(env, PARAMETER_ERROR, "parameter verification failed", "correct range");
             return nullptr;
         }
         if (argc >= PARAMETER_TWO && IsMatchType(env, args[1], napi_function)) {
@@ -349,7 +348,7 @@ static napi_value StopVibrationSync(napi_env env, napi_callback_info info)
     size_t argc = 0;
     napi_status status = napi_get_cb_info(env, info, &argc, nullptr, &thisArg, nullptr);
     if (status != napi_ok) {
-        ThrowErr(env, PARAMETER_ERROR, "Parameter verification failed", "Get the parameter info fail");
+        ThrowErr(env, PARAMETER_ERROR, "parameter verification failed", "enter the correct parameters");
         return result;
     }
     int32_t ret = Cancel();
@@ -367,12 +366,12 @@ static napi_value IsHdHapticSupported(napi_env env, napi_callback_info info)
     size_t argc = 0;
     napi_status status = napi_get_cb_info(env, info, &argc, nullptr, &thisArg, nullptr);
     if (status != napi_ok) {
-        ThrowErr(env, PARAMETER_ERROR, "Parameter verification failed", "Get the parameter info fail");
+        ThrowErr(env, PARAMETER_ERROR, "parameter verification failed", "enter the correct parameters");
         return result;
     }
     status= napi_get_boolean(env, IsHdHapticSupported(), &result);
     if (status != napi_ok) {
-        ThrowErr(env, PARAMETER_ERROR, "Parameter verification failed", "Must get the value of boolean");
+        ThrowErr(env, PARAMETER_ERROR, "parameter verification failed", "boolean");
     }
     return result;
 }
@@ -384,13 +383,13 @@ static napi_value IsSupportEffect(napi_env env, napi_callback_info info)
     napi_value thisArg = nullptr;
     napi_status status = napi_get_cb_info(env, info, &argc, args, &thisArg, nullptr);
     if ((status != napi_ok) || (argc == 0)) {
-        ThrowErr(env, PARAMETER_ERROR, "Parameter verification failed",
-            "parameter must be greater than 2");
+        ThrowErr(env, PARAMETER_ERROR, "parameter verification failed",
+            "parameter number greater than 2");
         return nullptr;
     }
     string effectId;
     if (!GetStringValue(env, args[0], effectId)) {
-        ThrowErr(env, PARAMETER_ERROR, "Parameter verification failed", "args[0] should be effectId");
+        ThrowErr(env, PARAMETER_ERROR, "parameter verification failed", "effectId");
         return nullptr;
     }
     sptr<AsyncCallbackInfo> asyncCallbackInfo = new (std::nothrow) AsyncCallbackInfo(env);
@@ -412,24 +411,24 @@ static napi_value IsSupportEffectSync(napi_env env, napi_callback_info info)
     napi_value thisArg = nullptr;
     napi_status status = napi_get_cb_info(env, info, &argc, args, &thisArg, nullptr);
     if ((status != napi_ok) || (argc == 0)) {
-        ThrowErr(env, PARAMETER_ERROR, "Parameter verification failed",
-            "parameter must be greater than 1");
+        ThrowErr(env, PARAMETER_ERROR, "parameter verification failed",
+            "parameter number greater than 1");
         return result;
     }
     string effectId;
     if (!GetStringValue(env, args[0], effectId)) {
-        ThrowErr(env, PARAMETER_ERROR, "Parameter verification failed", "Must get the value of string");
+        ThrowErr(env, PARAMETER_ERROR, "parameter verification failed", "string");
         return result;
     }
     bool isSupportEffect = false;
     int32_t ret = IsSupportEffect(effectId.c_str(), &isSupportEffect);
     if (ret != SUCCESS) {
-        ThrowErr(env, ret, "Parameter verification failed", "must be positive");
+        ThrowErr(env, ret, "parameter verification failed", "must be positive");
         return result;
     }
     status = napi_get_boolean(env, isSupportEffect, &result);
     if (status != napi_ok) {
-        ThrowErr(env, PARAMETER_ERROR, "Parameter verification failed", "Must get the value of boolean");
+        ThrowErr(env, PARAMETER_ERROR, "parameter verification failed", "boolean");
     }
     return result;
 }

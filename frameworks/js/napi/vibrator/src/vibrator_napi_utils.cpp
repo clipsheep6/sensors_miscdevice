@@ -193,7 +193,7 @@ bool ConvertErrorToResult(const napi_env &env, sptr<AsyncCallbackInfo> asyncCall
         MISC_HILOGE("ErrCode:%{public}d is invalid", code);
         return false;
     }
-    result = CreateBusinessError(env, code, msg.value());
+    result = CreateBusinessError(env, code, codeMsg);
     return (result != nullptr);
 }
 
