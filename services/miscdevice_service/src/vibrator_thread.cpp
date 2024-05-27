@@ -114,8 +114,14 @@ int32_t VibratorThread::PlayCustomByHdHptic(const VibrateInfo &info)
         }
         cv_.wait_for(vibrateLck, std::chrono::milliseconds(delayTime), [this] { return exitFlag_.load(); });
         if (exitFlag_) {
+            VibratorDevice.Stop(HDF_VIBRATOR_MODE_HDHAPTIC);
             MISC_HILOGD("Stop hd haptic, package:%{public}s", info.packageName.c_str());
             return SUCCESS;
+        }
+        int32_t ret = VibratorDevice.PlayPattern(patterns[i]);
+        if (ret != SUCCESS) {
+            MISC_HILOGE("Vibrate hd haptic failed");
+            return ERROR;
         }
     }
     return SUCCESS;

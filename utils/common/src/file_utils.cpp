@@ -198,9 +198,6 @@ std::string ReadFd(const RawFileDescriptor &rawFd)
     CHKPS(fp);
     if (fseek(fp, rawFd.offset, SEEK_SET) != 0) {
         MISC_HILOGE("fseek failed, errno:%{public}d", errno);
-        if (fclose(fp) != 0) {
-            MISC_HILOGW("Close file failed, errno:%{public}d", errno);
-        }
         return {};
     }
     std::string dataStr;
@@ -211,9 +208,6 @@ std::string ReadFd(const RawFileDescriptor &rawFd)
         fgets(buf, onceRead + 1, fp);
         dataStr += buf;
         alreadyRead = ftell(fp) - rawFd.offset;
-    }
-    if (fclose(fp) != 0) {
-        MISC_HILOGW("Close file failed after read, errno:%{public}d", errno);
     }
     return dataStr;
 }

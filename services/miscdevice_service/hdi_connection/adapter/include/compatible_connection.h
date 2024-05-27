@@ -35,7 +35,7 @@ public:
     bool IsVibratorRunning() override;
 #endif // OHOS_BUILD_ENABLE_VIBRATOR_CUSTOM
     std::optional<HdfEffectInfo> GetEffectInfo(const std::string &effect) override;
-    int32_t Stop(HdfVibratorMode mode) override;
+    int32_t Stop(HdfVibratorModeV1_2 mode) override;
     int32_t GetDelayTime(int32_t mode, int32_t &delayTime) override;
     int32_t GetVibratorCapacity(VibratorCapacity &capacity) override;
     int32_t PlayPattern(const VibratePattern &pattern) override;

@@ -36,6 +36,7 @@
 #include "parameters.h"
 #include "default_vibrator_decoder.h"
 #include "default_vibrator_decoder_factory.h"
+#include "vibrator_decoder_creator.h"
 #endif // OHOS_BUILD_ENABLE_VIBRATOR_CUSTOM
 
 #undef LOG_TAG
@@ -271,6 +272,7 @@ int32_t MiscdeviceService::StopVibrator(int32_t vibratorId)
     }
     if (vibratorHdiConnection_.IsVibratorRunning()) {
         vibratorHdiConnection_.Stop(HDF_VIBRATOR_MODE_PRESET);
+        vibratorHdiConnection_.Stop(HDF_VIBRATOR_MODE_HDHAPTIC);
     }
 #else
     if ((vibratorThread_ == nullptr) || (!vibratorThread_->IsRunning())) {
@@ -334,6 +336,7 @@ void MiscdeviceService::StartVibrateThread(VibrateInfo info)
 #ifdef OHOS_BUILD_ENABLE_VIBRATOR_CUSTOM
     if (vibratorHdiConnection_.IsVibratorRunning()) {
         vibratorHdiConnection_.Stop(HDF_VIBRATOR_MODE_PRESET);
+        vibratorHdiConnection_.Stop(HDF_VIBRATOR_MODE_HDHAPTIC);
     }
 #endif // OHOS_BUILD_ENABLE_VIBRATOR_CUSTOM
     vibratorThread_->UpdateVibratorEffect(info);
@@ -412,8 +415,9 @@ int32_t MiscdeviceService::PlayVibratorCustom(int32_t vibratorId, const RawFileD
         MISC_HILOGE("Invalid parameter, usage:%{public}d", usage);
         return PARAMETER_ERROR;
     }
-    std::unique_ptr<IVibratorDecoderFactory> decoderFactory = std::make_unique<DefaultVibratorDecoderFactory>();
-    std::unique_ptr<IVibratorDecoder> decoder(decoderFactory->CreateDecoder());
+    VibratorDecoderCreator creator;
+    std::unique_ptr<IVibratorDecoder> decoder(creator.CreateDecoder(rawFd));
+    CHKPR(decoder, ERROR);
     VibratePackage package;
     int32_t ret = decoder->DecodeEffect(rawFd, package);
     if (ret != SUCCESS || package.patterns.empty()) {
@@ -423,13 +427,19 @@ int32_t MiscdeviceService::PlayVibratorCustom(int32_t vibratorId, const RawFileD
     MergeVibratorParmeters(parameter, package);
     package.Dump();
     VibrateInfo info = {
-        .mode = VIBRATE_CUSTOM_COMPOSITE_EFFECT,
         .packageName = GetPackageName(GetCallingTokenID()),
         .pid = GetCallingPid(),
         .uid = GetCallingUid(),
         .usage = usage,
         .package = package,
     };
+    if (g_capacity.isSupportHdHaptic) {
+        info.mode = VIBRATE_CUSTOM_HD;
+    } else if (g_capacity.isSupportPresetMapping) {
+        info.mode = VIBRATE_CUSTOM_COMPOSITE_EFFECT;
+    } else if (g_capacity.isSupportTimeDelay) {
+        info.mode = VIBRATE_CUSTOM_COMPOSITE_TIME;
+    }
     std::lock_guard<std::mutex> lock(vibratorThreadMutex_);
     if (ShouldIgnoreVibrate(info)) {
         MISC_HILOGE("Vibration is ignored and high priority is vibrating");

@@ -43,7 +43,7 @@ std::unordered_map<std::string, int32_t> g_vibratorEffect = {
     {"haptic.effect.soft", 30},
     {"haptic.effect.sharp", 20}
 };
-HdfVibratorMode g_vibrateMode;
+HdfVibratorModeV1_2 g_vibrateMode;
 constexpr int32_t VIBRATE_DELAY_TIME = 10;
 } // namespace
 int32_t CompatibleConnection::duration_ = 0;
@@ -133,7 +133,7 @@ std::optional<HdfEffectInfo> CompatibleConnection::GetEffectInfo(const std::stri
     return effectInfo;
 }
 
-int32_t CompatibleConnection::Stop(HdfVibratorMode mode)
+int32_t CompatibleConnection::Stop(HdfVibratorModeV1_2 mode)
 {
     CALL_LOG_ENTER;
     if (mode < 0 || mode >= HDF_VIBRATOR_MODE_BUTT) {
