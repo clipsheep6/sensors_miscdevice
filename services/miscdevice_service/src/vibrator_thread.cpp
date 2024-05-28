@@ -85,7 +85,7 @@ int32_t VibratorThread::PlayEffect(const VibrateInfo &info)
     std::unique_lock<std::mutex> vibrateLck(vibrateMutex_);
     for (int32_t i = 0; i < info.count; ++i) {
         std::string effect = info.effect;
-        int32_t ret = VibratorDevice.Start(effect);
+        int32_t ret = VibratorDevice.StartByIntensity(effect, info.intensity);
         if (ret != SUCCESS) {
             MISC_HILOGE("Vibrate effect %{public}s failed, ", effect.c_str());
             return ERROR;

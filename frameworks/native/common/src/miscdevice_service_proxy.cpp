@@ -418,7 +418,7 @@ int32_t MiscdeviceServiceProxy::TransferClientRemoteObject(const sptr<IRemoteObj
 }
 
 int32_t MiscdeviceServiceProxy::PlayPrimitiveEffect(int32_t vibratorId, const std::string &effect, int32_t intensity,
-    int32_t usage)
+    int32_t usage, int32_t count)
 {
     MessageParcel data;
     if (!data.WriteInterfaceToken(MiscdeviceServiceProxy::GetDescriptor())) {
@@ -439,6 +439,10 @@ int32_t MiscdeviceServiceProxy::PlayPrimitiveEffect(int32_t vibratorId, const st
     }
     if (!data.WriteInt32(usage)) {
         MISC_HILOGE("Writeint32 usage failed");
+        return WRITE_MSG_ERR;
+    }
+    if (!data.WriteInt32(count)) {
+        MISC_HILOGE("Writeint32 count failed");
         return WRITE_MSG_ERR;
     }
     sptr<IRemoteObject> remote = Remote();

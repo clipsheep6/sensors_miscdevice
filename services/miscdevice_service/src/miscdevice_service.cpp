@@ -312,7 +312,8 @@ int32_t MiscdeviceService::PlayVibratorEffect(int32_t vibratorId, const std::str
         .usage = usage,
         .duration = effectInfo->duration,
         .effect = effect,
-        .count = count
+        .count = count,
+        .intensity = INTENSITY_ADJUST_MAX
     };
     std::lock_guard<std::mutex> lock(vibratorThreadMutex_);
     if (ShouldIgnoreVibrate(info)) {
@@ -768,7 +769,7 @@ void MiscdeviceService::DestroyClientPid(const sptr<IRemoteObject> &vibratorServ
 }
 
 int32_t MiscdeviceService::PlayPrimitiveEffect(int32_t vibratorId, const std::string &effect,
-    int32_t intensity, int32_t usage)
+    int32_t intensity, int32_t usage, int32_t count)
 {
     if ((intensity <= INTENSITY_MIN) || (intensity > INTENSITY_MAX) || (usage >= USAGE_MAX) || (usage < 0)) {
         MISC_HILOGE("Invalid parameter");
@@ -784,13 +785,15 @@ int32_t MiscdeviceService::PlayPrimitiveEffect(int32_t vibratorId, const std::st
         return PARAMETER_ERROR;
     }
     VibrateInfo info = {
-        .mode = VIBRATE_BUTT,
+        .mode = VIBRATE_PRESET,
         .packageName = GetPackageName(GetCallingTokenID()),
         .pid = GetCallingPid(),
         .uid = GetCallingUid(),
         .usage = usage,
         .duration = effectInfo->duration,
         .effect = effect,
+        .count = count,
+        .intensity = intensity
     };
     std::lock_guard<std::mutex> lock(vibratorThreadMutex_);
     if (ShouldIgnoreVibrate(info)) {
@@ -802,7 +805,7 @@ int32_t MiscdeviceService::PlayPrimitiveEffect(int32_t vibratorId, const std::st
     MISC_HILOGI("Start vibrator, currentTime:%{public}s, package:%{public}s, pid:%{public}d, usage:%{public}d,"
         "vibratorId:%{public}d, duration:%{public}d, effect:%{public}s", curVibrateTime.c_str(),
         info.packageName.c_str(), info.pid, info.usage, vibratorId, info.duration, info.effect.c_str());
-    return vibratorHdiConnection_.StartByIntensity(effect, intensity);
+    return NO_ERROR;
 }
 
 int32_t MiscdeviceService::GetVibratorCapacity(VibratorCapacity &capacity)

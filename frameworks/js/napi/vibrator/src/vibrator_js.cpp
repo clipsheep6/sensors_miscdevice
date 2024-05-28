@@ -38,6 +38,7 @@ constexpr int32_t VIBRATE_SHORT_DURATION = 35;
 constexpr int32_t VIBRATE_LONG_DURATION = 1000;
 constexpr int32_t PARAMETER_TWO = 2;
 constexpr int32_t PARAMETER_THREE = 3;
+constexpr int32_t INTENSITY_ADJUST_MAX = 100;
 }  // namespace
 
 static std::map<std::string, int32_t> g_usageType = {
@@ -61,6 +62,7 @@ struct VibrateInfo {
     int32_t fd = -1;
     int64_t offset = 0;
     int64_t length = -1;
+    int32_t intensity = 0;
 };
 
 static napi_value EmitAsyncWork(napi_value param, sptr<AsyncCallbackInfo> info)
@@ -180,8 +182,13 @@ bool ParseParameter(napi_env env, napi_value args[], size_t argc, VibrateInfo &i
     if (info.type == "time") {
         CHKCF(GetPropertyInt32(env, args[0], "duration", info.duration), "Get vibrate duration fail");
     } else if (info.type == "preset") {
-        CHKCF(GetPropertyInt32(env, args[0], "count", info.count), "Get vibrate count fail");
         CHKCF(GetPropertyString(env, args[0], "effectId", info.effectId), "Get vibrate effectId fail");
+        if (!GetPropertyInt32(env, args[0], "count", info.count)) {
+            info.count = 1;
+        }
+        if (!GetPropertyInt32(env, args[0], "intensity", info.intensity)) {
+            info.intensity = INTENSITY_ADJUST_MAX;
+        }
     } else if (info.type == "file") {
         napi_value hapticFd = nullptr;
         CHKCF(GetPropertyItem(env, args[0], "hapticFd", hapticFd), "Get vibrate hapticFd fail");
@@ -221,7 +228,7 @@ int32_t StartVibrate(const VibrateInfo &info)
             MISC_HILOGE("SetLoopCount fail");
             return PARAMETER_ERROR;
         }
-        return StartVibrator(info.effectId.c_str());
+        return PlayPrimitiveEffect(info.effectId.c_str(), info.intensity);
     } else if (info.type == "file") {
         return PlayVibratorCustom(info.fd, info.offset, info.length);
     }
@@ -472,6 +479,27 @@ static napi_value CreateEnumEffectId(const napi_env env, const napi_value export
     return exports;
 }
 
+static napi_value CreateEnumHapticFeedback(const napi_env env, napi_value exports)
+{
+    napi_value effectSoft = nullptr;
+    napi_value effectHard = nullptr;
+    napi_value effectSharp = nullptr;
+    NAPI_CALL(env, napi_create_string_utf8(env, "haptic.effect.soft", NAPI_AUTO_LENGTH, &effectSoft));
+    NAPI_CALL(env, napi_create_string_utf8(env, "haptic.effect.hard", NAPI_AUTO_LENGTH, &effectHard));
+    NAPI_CALL(env, napi_create_string_utf8(env, "haptic.effect.sharp", NAPI_AUTO_LENGTH, &effectSharp));
+
+    napi_property_descriptor desc[] = {
+        DECLARE_NAPI_STATIC_PROPERTY("EFFECT_SOFT", effectSoft),
+        DECLARE_NAPI_STATIC_PROPERTY("EFFECT_HARD", effectHard),
+        DECLARE_NAPI_STATIC_PROPERTY("EFFECT_SHARP", effectSharp),
+    };
+    napi_value result = nullptr;
+    NAPI_CALL(env, napi_define_class(env, "HapticFeedback", NAPI_AUTO_LENGTH, EnumClassConstructor, nullptr,
+        sizeof(desc) / sizeof(*desc), desc, &result));
+    NAPI_CALL(env, napi_set_named_property(env, exports, "HapticFeedback", result));
+    return exports;
+}
+
 static napi_value Init(napi_env env, napi_value exports)
 {
     napi_property_descriptor desc[] = {
@@ -487,6 +515,8 @@ static napi_value Init(napi_env env, napi_value exports)
     NAPI_CALL(env, napi_define_properties(env, exports, sizeof(desc) / sizeof(napi_property_descriptor), desc));
     NAPI_ASSERT_BASE(env, CreateEnumStopMode(env, exports) != nullptr, "Create enum stop mode fail", exports);
     NAPI_ASSERT_BASE(env, CreateEnumEffectId(env, exports) != nullptr, "Create enum effect id fail", exports);
+    NAPI_ASSERT_BASE(env, CreateEnumHapticFeedback(env, exports) != nullptr, "Create enum haptic feedback fail",
+                     exports);
     return exports;
 }
 

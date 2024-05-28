@@ -78,7 +78,7 @@ public:
     virtual int32_t GetDelayTime(int32_t &delayTime) override;
     virtual int32_t TransferClientRemoteObject(const sptr<IRemoteObject> &vibratorServiceClient) override;
     virtual int32_t PlayPrimitiveEffect(int32_t vibratorId, const std::string &effect, int32_t intensity,
-                                        int32_t usage) override;
+                                        int32_t usage, int32_t count) override;
     virtual int32_t GetVibratorCapacity(VibratorCapacity &capacity) override;
 
 private:
