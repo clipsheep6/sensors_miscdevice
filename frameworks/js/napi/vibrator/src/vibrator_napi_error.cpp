@@ -39,6 +39,7 @@ bool GetNapiError(int32_t errorCode, std::string &codeMsg)
 {
     auto iter = ERROR_MESSAGES.find(errorCode);
     if (iter == ERROR_MESSAGES.end()) {
+        MISC_HILOGE("errorCode %{public}d not found", errorCode);
         return false;
     }
     codeMsg = iter->second;
@@ -50,9 +51,9 @@ void ThrowErr(const napi_env &env, const int32_t errCode, const std::string &pri
     MISC_HILOGE("correctMsg:%{public}s, correctMsg:%{public}s, code:%{public}d", printMsg.c_str(), correctMsg.c_str(), errCode);
     std::string codeMsg;
     if (GetNapiError(errCode, codeMsg)) {
-        MISC_HILOGE("Message:%{public}s", codeMsg.c_str());
         char buf[300];
         if (sprintf_s(buf, sizeof(buf), codeMsg.c_str(), printMsg.c_str(), correctMsg.c_str()) > 0 ) {
+            MISC_HILOGE("Message buf:%{public}s", buf);
             CreateBusinessError(env, errCode, buf);
         } else {
             MISC_HILOGE("Failed to convert string type to char type");
