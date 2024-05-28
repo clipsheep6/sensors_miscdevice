@@ -50,5 +50,9 @@
 				 " desc=""/>
             </licensematcher>
         </licensematcherlist>
+        <filefilter name="binaryFileTypePolicyFilter" desc="Filters for binary file policies">
+            <filteritem type="filepath" name="figures/en-us_image_0000001152988366.png" desc="png文件,不参与打包不影响兼容性"/>
+            <filteritem type="filepath" name="figures/zh-cn_image_0000001152988366.png" desc="png文件,不参与打包不影响兼容性"/>
+        </filefilter>
     </oatconfig>
 </configuration>
