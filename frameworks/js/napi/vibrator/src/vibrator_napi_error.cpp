@@ -18,11 +18,16 @@
 #include <optional>
 
 #include "securec.h"
+
 #undef LOG_TAG
 #define LOG_TAG "VibratorNapiError"
 
 namespace OHOS {
 namespace Sensors {
+namespace {
+constexpr int32_t VIBRATE_BUFF = 300;
+}  // namespace
+
 napi_value CreateBusinessError(const napi_env &env, const int32_t errCode, const std::string &errMessage)
 {
     napi_value businessError = nullptr;
@@ -51,7 +56,7 @@ void ThrowErr(const napi_env &env, const int32_t errCode, const std::string &pri
     MISC_HILOGE("correctMsg:%{public}s, correctMsg:%{public}s, code:%{public}d", printMsg.c_str(), correctMsg.c_str(), errCode);
     std::string codeMsg;
     if (GetNapiError(errCode, codeMsg)) {
-        char buf[300];
+        char buf[VIBRATE_BUFF];
         if (sprintf_s(buf, sizeof(buf), codeMsg.c_str(), printMsg.c_str(), correctMsg.c_str()) > 0 ) {
             MISC_HILOGE("Message buf:%{public}s", buf);
             CreateBusinessError(env, errCode, buf);
