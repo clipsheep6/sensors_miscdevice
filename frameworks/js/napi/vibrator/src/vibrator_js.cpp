@@ -353,7 +353,7 @@ static napi_value StopVibrationSync(napi_env env, napi_callback_info info)
     }
     int32_t ret = Cancel();
     if (ret != SUCCESS) {
-        ThrowErr(env, ret, "Cancel execution fail", "must be positive");
+        ThrowErr(env, ret, "Cancel execution fail");
     }
     return result;
 }
@@ -422,11 +422,8 @@ static napi_value IsSupportEffectSync(napi_env env, napi_callback_info info)
     }
     bool isSupportEffect = false;
     int32_t ret = IsSupportEffect(effectId.c_str(), &isSupportEffect);
-    if (ret == PARAMETER_ERROR) {
-        ThrowErr(env, ret, "Parameter verification failed", "positive");
-        return result;
-    } else if (ret != SUCCESS) {
-        ThrowErr(env, ret, "IsSupportEffect execution failed", "must be positive");
+    if (ret != SUCCESS) {
+        ThrowErr(env, ret, "IsSupportEffect execution failed");
         return result;
     }
     status = napi_get_boolean(env, isSupportEffect, &result);
