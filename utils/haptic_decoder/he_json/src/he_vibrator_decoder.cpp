@@ -294,7 +294,7 @@ bool HEVibratorDecoder::CheckContinuousParameters(const VibrateEvent &event)
         MISC_HILOGE("The event duration is out of range, duration:%{public}d", event.duration);
         return false;
     }
-    int32_t pointNum = event.points.size();
+    size_t pointNum = event.points.size();
     if (pointNum < CURVE_POINT_NUM_MIN || pointNum > CURVE_POINT_NUM_MAX) {
         MISC_HILOGE("The points size is out of range, size:%{public}d", pointNum);
         return false;
