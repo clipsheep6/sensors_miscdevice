@@ -42,6 +42,10 @@
             </filefilter>
             <filefilter name="readmeOpenSourcefileNamePolicyFilter" desc="Filters for README.OpenSource file policies">
             </filefilter>
+            <filefilter name="binaryFileTypePolicyFilter" desc="Filters for binary file policies">
+                <filteritem type="filepath" name="figures/en-us_image_0000001152988366.png" desc="png文件,不参与打包不影响兼容性"/>
+                <filteritem type="filepath" name="figures/zh-cn_image_0000001152988366.png" desc="png文件,不参与打包不影响兼容性"/>
+            </filefilter>
         </filefilterlist>
         <licensematcherlist>
             <licensematcher name="uvwxyz License" desc="If the scanning result is InvalidLicense, you can define matching rules here. Note that quotation marks must be escaped.">
@@ -50,9 +54,5 @@
 				 " desc=""/>
             </licensematcher>
         </licensematcherlist>
-        <filefilter name="binaryFileTypePolicyFilter" desc="Filters for binary file policies">
-            <filteritem type="filepath" name="figures/en-us_image_0000001152988366.png" desc="png文件,不参与打包不影响兼容性"/>
-            <filteritem type="filepath" name="figures/zh-cn_image_0000001152988366.png" desc="png文件,不参与打包不影响兼容性"/>
-        </filefilter>
     </oatconfig>
 </configuration>
