@@ -249,12 +249,12 @@ int32_t MiscdeviceService::Vibrate(int32_t vibratorId, int32_t timeOut, int32_t 
         .duration = timeOut
     };
     std::lock_guard<std::mutex> lock(vibratorThreadMutex_);
+    std::string curVibrateTime = GetCurrentTime();
     if (ShouldIgnoreVibrate(info)) {
-        MISC_HILOGE("Vibration is ignored and high priority is vibrating");
+        MISC_HILOGE("%{public}s:vibration is ignored and high priority is vibrating", curVibrateTime.c_str());
         return ERROR;
     }
     StartVibrateThread(info);
-    std::string curVibrateTime = GetCurrentTime();
     MISC_HILOGI("Start vibrator, currentTime:%{public}s, package:%{public}s, pid:%{public}d, usage:%{public}d,"
         "vibratorId:%{public}d, duration:%{public}d", curVibrateTime.c_str(), info.packageName.c_str(), info.pid,
         info.usage, vibratorId, info.duration);
@@ -316,12 +316,12 @@ int32_t MiscdeviceService::PlayVibratorEffect(int32_t vibratorId, const std::str
         .intensity = INTENSITY_ADJUST_MAX
     };
     std::lock_guard<std::mutex> lock(vibratorThreadMutex_);
+    std::string curVibrateTime = GetCurrentTime();
     if (ShouldIgnoreVibrate(info)) {
-        MISC_HILOGE("Vibration is ignored and high priority is vibrating");
+        MISC_HILOGE("%{public}s:vibration is ignored and high priority is vibrating", curVibrateTime.c_str());
         return ERROR;
     }
     StartVibrateThread(info);
-    std::string curVibrateTime = GetCurrentTime();
     MISC_HILOGI("Start vibrator, currentTime:%{public}s, package:%{public}s, pid:%{public}d, usage:%{public}d,"
         "vibratorId:%{public}d, duration:%{public}d, effect:%{public}s, count:%{public}d", curVibrateTime.c_str(),
         info.packageName.c_str(), info.pid, info.usage, vibratorId, info.duration, info.effect.c_str(), info.count);
@@ -442,12 +442,12 @@ int32_t MiscdeviceService::PlayVibratorCustom(int32_t vibratorId, const RawFileD
         info.mode = VIBRATE_CUSTOM_COMPOSITE_TIME;
     }
     std::lock_guard<std::mutex> lock(vibratorThreadMutex_);
+    std::string curVibrateTime = GetCurrentTime();
     if (ShouldIgnoreVibrate(info)) {
-        MISC_HILOGE("Vibration is ignored and high priority is vibrating");
+        MISC_HILOGE("%{public}s:vibration is ignored and high priority is vibrating", curVibrateTime.c_str());
         return ERROR;
     }
     StartVibrateThread(info);
-    std::string curVibrateTime = GetCurrentTime();
     MISC_HILOGI("Start vibrator, currentTime:%{public}s, package:%{public}s, pid:%{public}d, usage:%{public}d,"
         "vibratorId:%{public}d, duration:%{public}d", curVibrateTime.c_str(), info.packageName.c_str(), info.pid,
         info.usage, vibratorId, package.packageDuration);
@@ -592,8 +592,9 @@ int32_t MiscdeviceService::PlayPattern(const VibratePattern &pattern, int32_t us
     };
     if (g_capacity.isSupportHdHaptic) {
         std::lock_guard<std::mutex> lock(vibratorThreadMutex_);
+        std::string curVibrateTime = GetCurrentTime();
         if (ShouldIgnoreVibrate(info)) {
-            MISC_HILOGE("Vibration is ignored and high priority is vibrating");
+            MISC_HILOGE("%{public}s:vibration is ignored and high priority is vibrating", curVibrateTime.c_str());
             return ERROR;
         }
         StartVibrateThread(info);
@@ -605,12 +606,12 @@ int32_t MiscdeviceService::PlayPattern(const VibratePattern &pattern, int32_t us
     }
     info.package = package;
     std::lock_guard<std::mutex> lock(vibratorThreadMutex_);
+    std::string curVibrateTime = GetCurrentTime();
     if (ShouldIgnoreVibrate(info)) {
-        MISC_HILOGE("Vibration is ignored and high priority is vibrating");
+        MISC_HILOGE("%{public}s:vibration is ignored and high priority is vibrating", curVibrateTime.c_str());
         return ERROR;
     }
     StartVibrateThread(info);
-    std::string curVibrateTime = GetCurrentTime();
     MISC_HILOGI("Start vibrator, currentTime:%{public}s, package:%{public}s, pid:%{public}d, usage:%{public}d,"
         "duration:%{public}d", curVibrateTime.c_str(), info.packageName.c_str(), info.pid, info.usage,
         pattern.patternDuration);
@@ -796,12 +797,12 @@ int32_t MiscdeviceService::PlayPrimitiveEffect(int32_t vibratorId, const std::st
         .intensity = intensity
     };
     std::lock_guard<std::mutex> lock(vibratorThreadMutex_);
+    std::string curVibrateTime = GetCurrentTime();
     if (ShouldIgnoreVibrate(info)) {
-        MISC_HILOGE("Vibration is ignored and high priority is vibrating");
+        MISC_HILOGE("%{public}s:vibration is ignored and high priority is vibrating", curVibrateTime.c_str());
         return ERROR;
     }
     StartVibrateThread(info);
-    std::string curVibrateTime = GetCurrentTime();
     MISC_HILOGI("Start vibrator, currentTime:%{public}s, package:%{public}s, pid:%{public}d, usage:%{public}d,"
         "vibratorId:%{public}d, duration:%{public}d, effect:%{public}s", curVibrateTime.c_str(),
         info.packageName.c_str(), info.pid, info.usage, vibratorId, info.duration, info.effect.c_str());

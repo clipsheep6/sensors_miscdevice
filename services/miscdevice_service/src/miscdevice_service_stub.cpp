@@ -219,7 +219,7 @@ int32_t MiscdeviceServiceStub::PlayVibratorCustomStub(MessageParcel &data, Messa
     ret = PlayVibratorCustom(vibratorId, rawFd, usage, parameter.value());
     close(rawFd.fd);
     if (ret != ERR_OK) {
-        MISC_HILOGE("PlayVibratorCustom failed, ret:%{public}d", ret);
+        MISC_HILOGD("PlayVibratorCustom failed, ret:%{public}d", ret);
         return ret;
     }
     return ret;
