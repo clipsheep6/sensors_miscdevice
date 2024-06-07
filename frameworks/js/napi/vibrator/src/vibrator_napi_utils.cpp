@@ -351,5 +351,5 @@ void EmitPromiseWork(sptr<AsyncCallbackInfo> asyncCallbackInfo)
         asyncCallbackInfo->DecStrongRef(nullptr);
     }
 }
-}  // namespace Sensors
-}  // namespace OHOS
+} // namespace Sensors
+} // namespace OHOS

@@ -105,7 +105,7 @@ std::optional<HdfEffectInfo> VibratorHdiConnection::GetEffectInfo(const std::str
     return ret;
 }
 
-int32_t VibratorHdiConnection::Stop(HdfVibratorMode mode)
+int32_t VibratorHdiConnection::Stop(HdfVibratorModeV1_2 mode)
 {
     CHKPR(iVibratorHdiConnection_, VIBRATOR_HDF_CONNECT_ERR);
     StartTrace(HITRACE_TAG_SENSORS, "Stop");

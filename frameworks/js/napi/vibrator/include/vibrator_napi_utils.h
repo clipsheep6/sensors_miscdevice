@@ -78,6 +78,6 @@ bool ConstructIsSupportEffectResult(const napi_env &env, sptr<AsyncCallbackInfo>
     napi_value result[], int32_t length);
 void EmitAsyncCallbackWork(sptr<AsyncCallbackInfo> async_callback_info);
 void EmitPromiseWork(sptr<AsyncCallbackInfo> asyncCallbackInfo);
-}  // namespace Sensors
-}  // namespace OHOS
+} // namespace Sensors
+} // namespace OHOS
 #endif // VIBRATOR_NAPI_UTILS_H

@@ -17,6 +17,7 @@
 #define VIBRATOR_DECODER_MANAGER_H
 
 #include "i_vibrator_decoder.h"
+#include "json_parser.h"
 #include "raw_file_descriptor.h"
 #include "vibrator_infos.h"
 
@@ -35,6 +36,7 @@ public:
     IVibratorDecoder *CreateDecoder(const RawFileDescriptor &rawFd);
 
 private:
+    bool CheckJsonMetadata(const JsonParser &parser);
     DecoderType GetDecoderType(const RawFileDescriptor &rawFd);
 };
 }  // namespace Sensors

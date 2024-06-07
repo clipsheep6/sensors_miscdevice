@@ -127,10 +127,10 @@ std::optional<HdfEffectInfo> HdiConnection::GetEffectInfo(const std::string &eff
     return effectInfo;
 }
 
-int32_t HdiConnection::Stop(HdfVibratorMode mode)
+int32_t HdiConnection::Stop(HdfVibratorModeV1_2 mode)
 {
     CHKPR(vibratorInterface_, ERR_INVALID_VALUE);
-    int32_t ret = vibratorInterface_->Stop(mode);
+    int32_t ret = vibratorInterface_->StopV1_2(mode);
     if (ret < 0) {
         HiSysEventWrite(HiSysEvent::Domain::MISCDEVICE, "VIBRATOR_HDF_SERVICE_EXCEPTION",
             HiSysEvent::EventType::FAULT, "PKG_NAME", "Stop", "ERROR_CODE", ret);
