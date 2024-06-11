@@ -26,10 +26,11 @@
 
 namespace OHOS {
 namespace Sensors {
-using OHOS::HDI::Vibrator::V1_1::HdfVibratorMode;
-using OHOS::HDI::Vibrator::V1_1::HDF_VIBRATOR_MODE_ONCE;
-using OHOS::HDI::Vibrator::V1_1::HDF_VIBRATOR_MODE_PRESET;
-using OHOS::HDI::Vibrator::V1_1::HDF_VIBRATOR_MODE_BUTT;
+using OHOS::HDI::Vibrator::V1_2::HdfVibratorModeV1_2;
+using OHOS::HDI::Vibrator::V1_2::HDF_VIBRATOR_MODE_ONCE;
+using OHOS::HDI::Vibrator::V1_2::HDF_VIBRATOR_MODE_PRESET;
+using OHOS::HDI::Vibrator::V1_2::HDF_VIBRATOR_MODE_HDHAPTIC;
+using OHOS::HDI::Vibrator::V1_2::HDF_VIBRATOR_MODE_BUTT;
 using OHOS::HDI::Vibrator::V1_2::CurvePoint;
 using OHOS::HDI::Vibrator::V1_2::EVENT_TYPE;
 using OHOS::HDI::Vibrator::V1_2::HapticCapacity;
@@ -58,7 +59,7 @@ public:
     virtual bool IsVibratorRunning() = 0;
 #endif // OHOS_BUILD_ENABLE_VIBRATOR_CUSTOM
     virtual std::optional<HdfEffectInfo> GetEffectInfo(const std::string &effect) = 0;
-    virtual int32_t Stop(HdfVibratorMode mode) = 0;
+    virtual int32_t Stop(HdfVibratorModeV1_2 mode) = 0;
     virtual int32_t DestroyHdiConnection() = 0;
     virtual int32_t GetDelayTime(int32_t mode, int32_t &delayTime) = 0;
     virtual int32_t GetVibratorCapacity(VibratorCapacity &capacity) = 0;

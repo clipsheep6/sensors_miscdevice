@@ -69,7 +69,8 @@ public:
     int32_t GetDelayTime(int32_t &delayTime);
     int32_t PlayPattern(const VibratorPattern &pattern, int32_t usage, const VibratorParameter &parameter);
     int32_t FreeVibratorPackage(VibratorPackage &package);
-    int32_t PlayPrimitiveEffect(int32_t vibratorId, const std::string &effect, int32_t intensity, int32_t usage);
+    int32_t PlayPrimitiveEffect(int32_t vibratorId, const std::string &effect, int32_t intensity, int32_t usage,
+        int32_t count);
     bool IsSupportVibratorCustom();
 
 private:

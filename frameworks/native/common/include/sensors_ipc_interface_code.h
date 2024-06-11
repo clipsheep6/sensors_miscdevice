@@ -37,6 +37,6 @@ enum class MiscdeviceInterfaceCode {
     PLAY_PRIMITIVE_EFFECT,
     GET_VIBRATOR_CAPACITY,
 };
-}  // namespace Sensors
-}  // namespace OHOS
-#endif  // SENSORS_IPC_INTERFACE_CODE_H
+} // namespace Sensors
+} // namespace OHOS
+#endif // SENSORS_IPC_INTERFACE_CODE_H

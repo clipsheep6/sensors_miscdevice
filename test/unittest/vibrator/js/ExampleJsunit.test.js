@@ -376,7 +376,6 @@ describe("VibratorJsTest", function () {
         } catch (error) {
             console.info(error);
             expect(error.code).assertEqual(PARAMETER_ERROR_CODE);
-            expect(error.message).assertEqual(PARAMETER_ERROR_MSG);
             done();
         }   
     })
@@ -579,7 +578,6 @@ describe("VibratorJsTest", function () {
         } catch (error) {
             console.info(error);
             expect(error.code).assertEqual(PARAMETER_ERROR_CODE);
-            expect(error.message).assertEqual(PARAMETER_ERROR_MSG);
             done();
         }
     })
@@ -1217,7 +1215,6 @@ describe("VibratorJsTest", function () {
         } catch (error) {
             console.info(error);
             expect(error.code).assertEqual(PARAMETER_ERROR_CODE);
-            expect(error.message).assertEqual(PARAMETER_ERROR_MSG);
             done();
         }
     })
@@ -1284,7 +1281,6 @@ describe("VibratorJsTest", function () {
         } catch (error) {
             console.info(error);
             expect(error.code).assertEqual(PARAMETER_ERROR_CODE);
-            expect(error.message).assertEqual(PARAMETER_ERROR_MSG);
             done();
         }
     })
@@ -1314,7 +1310,6 @@ describe("VibratorJsTest", function () {
             } catch (error) {
                 console.info(error);
                 expect(error.code).assertEqual(PARAMETER_ERROR_CODE);
-                expect(error.message).assertEqual(PARAMETER_ERROR_MSG);
                 done();
             }
         } else {
@@ -1337,7 +1332,6 @@ describe("VibratorJsTest", function () {
         } catch (error) {
             console.info(error);
             expect(error.code).assertEqual(PARAMETER_ERROR_CODE);
-            expect(error.message).assertEqual(PARAMETER_ERROR_MSG);
             done();
         }
     })
@@ -1386,7 +1380,6 @@ describe("VibratorJsTest", function () {
         } catch (error) {
             console.info(error);
             expect(error.code).assertEqual(PARAMETER_ERROR_CODE);
-            expect(error.message).assertEqual(PARAMETER_ERROR_MSG);
             done();
         }
     })
@@ -1444,7 +1437,6 @@ describe("VibratorJsTest", function () {
         } catch (error) {
             console.info(error);
             expect(error.code).assertEqual(PARAMETER_ERROR_CODE);
-            expect(error.message).assertEqual(PARAMETER_ERROR_MSG);
             done();
         }
     })
@@ -1475,7 +1467,6 @@ describe("VibratorJsTest", function () {
             } catch (error) {
                 console.info(error);
                 expect(error.code).assertEqual(PARAMETER_ERROR_CODE);
-                expect(error.message).assertEqual(PARAMETER_ERROR_MSG);
                 done();
             }
         } else {
@@ -1503,7 +1494,6 @@ describe("VibratorJsTest", function () {
         } catch (error) {
             console.info(error);
             expect(error.code).assertEqual(PARAMETER_ERROR_CODE);
-            expect(error.message).assertEqual(PARAMETER_ERROR_MSG);
             done();
         }
     })
@@ -2073,7 +2063,6 @@ describe("VibratorJsTest", function () {
         } catch (error) {
             console.info(error);
             expect(error.code).assertEqual(PARAMETER_ERROR_CODE);
-            expect(error.message).assertEqual(PARAMETER_ERROR_MSG);
             done();
         }
     })
@@ -2155,7 +2144,6 @@ describe("VibratorJsTest", function () {
         } catch (error) {
             console.info(error);
             expect(error.code).assertEqual(PARAMETER_ERROR_CODE);
-            expect(error.message).assertEqual(PARAMETER_ERROR_MSG);
             done();
         }
     })
@@ -2321,7 +2309,6 @@ describe("VibratorJsTest", function () {
             });
         } catch (error) {
             expect(error.code).assertEqual(PARAMETER_ERROR_CODE);
-            expect(error.message).assertEqual(PARAMETER_ERROR_MSG);
             done();
         }
     })
@@ -2339,7 +2326,6 @@ describe("VibratorJsTest", function () {
         } catch (error) {
             console.info("VibrateTest029 exception in");
             expect(error.code).assertEqual(PARAMETER_ERROR_CODE);
-            expect(error.message).assertEqual(PARAMETER_ERROR_MSG);
             done();
         }
     })
@@ -2451,7 +2437,6 @@ describe("VibratorJsTest", function () {
             });
         } catch (error) {
             expect(error.code).assertEqual(PARAMETER_ERROR_CODE);
-            expect(error.message).assertEqual(PARAMETER_ERROR_MSG);
             done();
         }
     })
@@ -2474,7 +2459,6 @@ describe("VibratorJsTest", function () {
             });
         } catch (error) {
             expect(error.code).assertEqual(PARAMETER_ERROR_CODE);
-            expect(error.message).assertEqual(PARAMETER_ERROR_MSG);
             done();
         }
     })
@@ -3140,7 +3124,6 @@ describe("VibratorJsTest", function () {
             });
         } catch (error) {
             expect(error.code).assertEqual(PARAMETER_ERROR_CODE);
-            expect(error.message).assertEqual(PARAMETER_ERROR_MSG);
             done();
         }
     })

@@ -62,7 +62,7 @@ int32_t MiscdeviceServiceProxy::Vibrate(int32_t vibratorId, int32_t timeOut, int
     if (ret != NO_ERROR) {
         HiSysEventWrite(HiSysEvent::Domain::MISCDEVICE, "MISC_SERVICE_IPC_EXCEPTION",
             HiSysEvent::EventType::FAULT, "PKG_NAME", "Vibrate", "ERROR_CODE", ret);
-        MISC_HILOGE("SendRequest failed, ret:%{public}d", ret);
+        MISC_HILOGD("SendRequest failed, ret:%{public}d", ret);
     }
     return ret;
 }
@@ -125,7 +125,7 @@ int32_t MiscdeviceServiceProxy::PlayVibratorEffect(int32_t vibratorId, const std
     if (ret != NO_ERROR) {
         HiSysEventWrite(HiSysEvent::Domain::MISCDEVICE, "MISC_SERVICE_IPC_EXCEPTION",
             HiSysEvent::EventType::FAULT, "PKG_NAME", "PlayVibratorEffect", "ERROR_CODE", ret);
-        MISC_HILOGE("SendRequest failed, ret:%{public}d", ret);
+        MISC_HILOGD("SendRequest failed, ret:%{public}d", ret);
     }
     return ret;
 }
@@ -179,7 +179,7 @@ int32_t MiscdeviceServiceProxy::IsSupportEffect(const std::string &effect, bool 
     if (ret != NO_ERROR) {
         HiSysEventWrite(HiSysEvent::Domain::MISCDEVICE, "MISC_SERVICE_IPC_EXCEPTION",
             HiSysEvent::EventType::FAULT, "PKG_NAME", "IsSupportEffect", "ERROR_CODE", ret);
-        MISC_HILOGE("SendRequest failed, ret:%{public}d", ret);
+        MISC_HILOGD("SendRequest failed, ret:%{public}d", ret);
         return ret;
     }
     if (!reply.ReadBool(state)) {
@@ -231,7 +231,7 @@ int32_t MiscdeviceServiceProxy::PlayVibratorCustom(int32_t vibratorId, const Raw
     if (ret != NO_ERROR) {
         HiSysEventWrite(HiSysEvent::Domain::MISCDEVICE, "MISC_SERVICE_IPC_EXCEPTION",
             HiSysEvent::EventType::FAULT, "PKG_NAME", "PlayVibratorCustom", "ERROR_CODE", ret);
-        MISC_HILOGE("SendRequest failed, ret:%{public}d", ret);
+        MISC_HILOGD("SendRequest failed, ret:%{public}d", ret);
     }
     return ret;
 }
@@ -349,7 +349,7 @@ int32_t MiscdeviceServiceProxy::GetDelayTime(int32_t &delayTime)
     if (ret != NO_ERROR) {
         HiSysEventWrite(HiSysEvent::Domain::MISCDEVICE, "MISC_SERVICE_IPC_EXCEPTION",
             HiSysEvent::EventType::FAULT, "PKG_NAME", "GetDelayTime", "ERROR_CODE", ret);
-        MISC_HILOGE("SendRequest failed, ret:%{public}d", ret);
+        MISC_HILOGD("SendRequest failed, ret:%{public}d", ret);
     }
     if (!reply.ReadInt32(delayTime)) {
         MISC_HILOGE("Parcel read failed");
@@ -387,7 +387,7 @@ int32_t MiscdeviceServiceProxy::PlayPattern(const VibratePattern &pattern, int32
     if (ret != NO_ERROR) {
         HiSysEventWrite(HiSysEvent::Domain::MISCDEVICE, "MISC_SERVICE_IPC_EXCEPTION",
             HiSysEvent::EventType::FAULT, "PKG_NAME", "PlayPattern", "ERROR_CODE", ret);
-        MISC_HILOGE("SendRequest failed, ret:%{public}d", ret);
+        MISC_HILOGD("SendRequest failed, ret:%{public}d", ret);
     }
     return ret;
 }
@@ -418,7 +418,7 @@ int32_t MiscdeviceServiceProxy::TransferClientRemoteObject(const sptr<IRemoteObj
 }
 
 int32_t MiscdeviceServiceProxy::PlayPrimitiveEffect(int32_t vibratorId, const std::string &effect, int32_t intensity,
-    int32_t usage)
+    int32_t usage, int32_t count)
 {
     MessageParcel data;
     if (!data.WriteInterfaceToken(MiscdeviceServiceProxy::GetDescriptor())) {
@@ -441,6 +441,10 @@ int32_t MiscdeviceServiceProxy::PlayPrimitiveEffect(int32_t vibratorId, const st
         MISC_HILOGE("Writeint32 usage failed");
         return WRITE_MSG_ERR;
     }
+    if (!data.WriteInt32(count)) {
+        MISC_HILOGE("Writeint32 count failed");
+        return WRITE_MSG_ERR;
+    }
     sptr<IRemoteObject> remote = Remote();
     CHKPR(remote, ERROR);
     MessageParcel reply;
@@ -450,7 +454,7 @@ int32_t MiscdeviceServiceProxy::PlayPrimitiveEffect(int32_t vibratorId, const st
     if (ret != NO_ERROR) {
         HiSysEventWrite(HiSysEvent::Domain::MISCDEVICE, "MISC_SERVICE_IPC_EXCEPTION",
             HiSysEvent::EventType::FAULT, "PKG_NAME", "PlayPrimitiveEffect", "ERROR_CODE", ret);
-        MISC_HILOGE("SendRequest failed, ret:%{public}d", ret);
+        MISC_HILOGD("SendRequest failed, ret:%{public}d", ret);
     }
     return ret;
 }
@@ -482,5 +486,5 @@ int32_t MiscdeviceServiceProxy::GetVibratorCapacity(VibratorCapacity &capacity)
     capacity = vibratorCapacity.value();
     return ret;
 }
-}  // namespace Sensors
-}  // namespace OHOS
+} // namespace Sensors
+} // namespace OHOS

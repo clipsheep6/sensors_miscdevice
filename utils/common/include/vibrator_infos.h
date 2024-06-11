@@ -127,6 +127,7 @@ struct VibrateInfo {
     int32_t duration = 0;
     std::string effect;
     int32_t count = 0;
+    int32_t intensity = 0;
     VibratePackage package;
 };
 

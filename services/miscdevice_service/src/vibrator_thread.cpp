@@ -85,7 +85,7 @@ int32_t VibratorThread::PlayEffect(const VibrateInfo &info)
     std::unique_lock<std::mutex> vibrateLck(vibrateMutex_);
     for (int32_t i = 0; i < info.count; ++i) {
         std::string effect = info.effect;
-        int32_t ret = VibratorDevice.Start(effect);
+        int32_t ret = VibratorDevice.StartByIntensity(effect, info.intensity);
         if (ret != SUCCESS) {
             MISC_HILOGE("Vibrate effect %{public}s failed, ", effect.c_str());
             return ERROR;
@@ -114,8 +114,14 @@ int32_t VibratorThread::PlayCustomByHdHptic(const VibrateInfo &info)
         }
         cv_.wait_for(vibrateLck, std::chrono::milliseconds(delayTime), [this] { return exitFlag_.load(); });
         if (exitFlag_) {
+            VibratorDevice.Stop(HDF_VIBRATOR_MODE_HDHAPTIC);
             MISC_HILOGD("Stop hd haptic, package:%{public}s", info.packageName.c_str());
             return SUCCESS;
+        }
+        int32_t ret = VibratorDevice.PlayPattern(patterns[i]);
+        if (ret != SUCCESS) {
+            MISC_HILOGE("Vibrate hd haptic failed");
+            return ERROR;
         }
     }
     return SUCCESS;

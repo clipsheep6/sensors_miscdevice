@@ -38,6 +38,7 @@ ohos_shared_library("libmiscdevice_utils") {
 
   external_deps = [
     "access_token:libaccesstoken_sdk",
+    "bounds_checking_function:libsec_shared",
     "cJSON:cjson",
     "c_utils:utils",
     "hilog:libhilog",

@@ -219,7 +219,7 @@ int32_t MiscdeviceServiceStub::PlayVibratorCustomStub(MessageParcel &data, Messa
     ret = PlayVibratorCustom(vibratorId, rawFd, usage, parameter.value());
     close(rawFd.fd);
     if (ret != ERR_OK) {
-        MISC_HILOGE("PlayVibratorCustom failed, ret:%{public}d", ret);
+        MISC_HILOGD("PlayVibratorCustom failed, ret:%{public}d", ret);
         return ret;
     }
     return ret;
@@ -370,12 +370,13 @@ int32_t MiscdeviceServiceStub::PlayPrimitiveEffectStub(MessageParcel &data, Mess
     std::string effect;
     int32_t intensity = 0;
     int32_t usage = 0;
+    int32_t count = 0;
     if ((!data.ReadInt32(vibratorId)) || (!data.ReadString(effect)) ||
-        (!data.ReadInt32(intensity)) || (!data.ReadInt32(usage))) {
+        (!data.ReadInt32(intensity)) || (!data.ReadInt32(usage)) || (!data.ReadInt32(count))) {
         MISC_HILOGE("Parcel read failed");
         return ERROR;
     }
-    return PlayPrimitiveEffect(vibratorId, effect, intensity, usage);
+    return PlayPrimitiveEffect(vibratorId, effect, intensity, usage, count);
 }
 
 int32_t MiscdeviceServiceStub::GetVibratorCapacityStub(MessageParcel &data, MessageParcel &reply)

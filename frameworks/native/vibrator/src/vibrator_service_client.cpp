@@ -467,10 +467,10 @@ int32_t VibratorServiceClient::FreeVibratorPackage(VibratorPackage &package)
 }
 
 int32_t VibratorServiceClient::PlayPrimitiveEffect(int32_t vibratorId, const std::string &effect, int32_t intensity,
-    int32_t usage)
+    int32_t usage, int32_t count)
 {
-    MISC_HILOGD("Vibrate begin, effect:%{public}s, intensity:%{public}d, usage:%{public}d",
-        effect.c_str(), intensity, usage);
+    MISC_HILOGD("Vibrate begin, effect:%{public}s, intensity:%{public}d, usage:%{public}d, count:%{public}d",
+        effect.c_str(), intensity, usage, count);
     int32_t ret = InitServiceClient();
     if (ret != ERR_OK) {
         MISC_HILOGE("InitServiceClient failed, ret:%{public}d", ret);
@@ -478,11 +478,11 @@ int32_t VibratorServiceClient::PlayPrimitiveEffect(int32_t vibratorId, const std
     }
     CHKPR(miscdeviceProxy_, ERROR);
     StartTrace(HITRACE_TAG_SENSORS, "PlayPrimitiveEffect");
-    ret = miscdeviceProxy_->PlayPrimitiveEffect(vibratorId, effect, intensity, usage);
+    ret = miscdeviceProxy_->PlayPrimitiveEffect(vibratorId, effect, intensity, usage, count);
     FinishTrace(HITRACE_TAG_SENSORS);
     if (ret != ERR_OK) {
         MISC_HILOGE("Play primitive effect failed, ret:%{public}d, effect:%{public}s, intensity:%{public}d,"
-            "usage:%{public}d", ret, effect.c_str(), intensity, usage);
+            "usage:%{public}d, count:%{public}d", ret, effect.c_str(), intensity, usage, count);
     }
     return ret;
 }
