@@ -24,7 +24,7 @@
 
 namespace OHOS {
 namespace Sensors {
-const std::map<int32_t, std::string> ERROR_CODE_MESSAGES = {
+const std::map<int32_t, std::string> ACCURATE_MESSAGES = {
     {DEVICE_OPERATION_FAILED,  "Device operation failed."},
     {PERMISSION_DENIED,  "Permission denied. An attempt was made to %s forbidden by permission:%s."},
     {PARAMETER_ERROR,  "Parameter error. The type of %s must be %s."},

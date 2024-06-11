@@ -42,8 +42,8 @@ napi_value CreateBusinessError(const napi_env &env, const int32_t errCode, const
 
 bool GetNapiError(int32_t errorCode, std::string &codeMsg)
 {
-    auto iter = ERROR_CODE_MESSAGES.find(errorCode);
-    if (iter == ERROR_CODE_MESSAGES.end()) {
+    auto iter = ACCURATE_MESSAGES.find(errorCode);
+    if (iter == ACCURATE_MESSAGES.end()) {
         MISC_HILOGE("errorCode %{public}d not found", errorCode);
         return false;
     }
