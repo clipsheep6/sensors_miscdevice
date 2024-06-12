@@ -70,7 +70,7 @@ DecoderType VibratorDecoderCreator::GetDecoderType(const RawFileDescriptor &rawF
     } else if (extName == "json") {
         return DECODER_TYPE_OH_JSON;
     } else {
-        MISC_HILOGE("Invalid decoder extend name");
+        MISC_HILOGD("Invalid decoder extend name");
         return DECODER_TYPE_BUTT;
     }
 }
