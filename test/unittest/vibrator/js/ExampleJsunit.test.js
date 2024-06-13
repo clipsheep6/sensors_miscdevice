@@ -21,6 +21,9 @@ import {describe, beforeAll, beforeEach, afterEach, afterAll, it, expect} from '
 describe("VibratorJsTest", function () {
     var g_execute = true;
     let EFFECT_ID = "haptic.clock.timer";
+    let EFFECT_SOFT = "haptic.effect.soft";
+    let EFFECT_HARD = "haptic.effect.hard";
+    let EFFECT_SHARP = "haptic.effect.sharp";
     let INVALID_EFFECT_ID = "haptic.xxx.yyy";
     beforeAll(function() {
         /*
@@ -1156,6 +1159,114 @@ describe("VibratorJsTest", function () {
             done();
         } else {
             console.info('VibratorJsTest038 vibrator success');
+            expect(true).assertTrue();
+            done();
+        }
+    })
+
+    /*
+    * @tc.name:VibratorJsTest039
+    * @tc.desc:verify app info is not null
+    * @tc.type: FUNC
+    * @tc.require: I53SGE
+    * @tc.number: VibratorJsTest039
+    */
+    it("VibratorJsTest039", 0, async function (done) {
+        let ret = vibrator.isSupportEffectSync("haptic.effect.soft");
+        if (ret) {
+            vibrator.startVibration({
+                type: "preset",
+                effectId: "haptic.effect.soft",
+                count: 1,
+                intensity: 50,
+            }, {
+                usage: "unknown"
+            }, (error) => {
+                if (error) {
+                    console.info('VibratorJsTest039 vibrator error');
+                    expect(false).assertTrue();
+                } else {
+                    console.info('VibratorJsTest039 vibrator success');
+                    expect(true).assertTrue();
+                }
+                setTimeout(() => {
+                    done();
+                }, 500);
+            });
+        } else {
+            console.info('This device is not supportEffect');
+            expect(true).assertTrue();
+            done();
+        }
+    })
+
+    /*
+    * @tc.name:VibratorJsTest040
+    * @tc.desc:verify app info is not null
+    * @tc.type: FUNC
+    * @tc.require: I53SGE
+    * @tc.number: VibratorJsTest040
+    */
+    it("VibratorJsTest040", 0, async function (done) {
+        let ret = vibrator.isSupportEffectSync("haptic.effect.hard");
+        if (ret) {
+            vibrator.startVibration({
+                type: "preset",
+                effectId: "haptic.effect.soft",
+                count: 1,
+                intensity: 50,
+            }, {
+                usage: "unknown"
+            }, (error) => {
+                if (error) {
+                    console.info('VibratorJsTest040 vibrator error');
+                    expect(false).assertTrue();
+                } else {
+                    console.info('VibratorJsTest040 vibrator success');
+                    expect(true).assertTrue();
+                }
+                setTimeout(() => {
+                    done();
+                }, 500);
+            });
+        } else {
+            console.info('This device is not supportEffect');
+            expect(true).assertTrue();
+            done();
+        }
+    })
+
+    /*
+    * @tc.name:VibratorJsTest041
+    * @tc.desc:verify app info is not null
+    * @tc.type: FUNC
+    * @tc.require: I53SGE
+    * @tc.number: VibratorJsTest041
+    */
+    it("VibratorJsTest041", 0, async function (done) {
+        let ret = vibrator.isSupportEffectSync("haptic.effect.sharp");
+        if (ret) {
+            vibrator.startVibration({
+                type: "preset",
+                effectId: "haptic.effect.sharp",
+                count: 1,
+                intensity: 50,
+            }, {
+                usage: "unknown"
+            }, (error) => {
+                if (error) {
+                    console.info('VibratorJsTest041 vibrator error');
+                    expect(false).assertTrue();
+                } else {
+                    console.info('VibratorJsTest041 vibrator success');
+                    expect(true).assertTrue();
+                }
+                setTimeout(() => {
+                    done();
+                }, 500);
+            });
+        } else {
+            console.info('This device is not supportEffect');
             expect(true).assertTrue();
             done();
         }
