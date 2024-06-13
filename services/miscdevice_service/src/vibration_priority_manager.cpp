@@ -119,18 +119,18 @@ int32_t VibrationPriorityManager::GetStringValue(const std::string &key, std::st
     if (count == 0) {
         MISC_HILOGW("Not found value, key:%{public}s, count:%{public}d", key.c_str(), count);
         IPCSkeleton::SetCallingIdentity(callingIdentity);
+        resultSet->Close();
         return MISC_NAME_NOT_FOUND_ERR;
     }
     const int32_t index = 0;
     resultSet->GoToRow(index);
     int32_t ret = resultSet->GetString(index, value);
+    IPCSkeleton::SetCallingIdentity(callingIdentity);
+    resultSet->Close();
     if (ret != ERR_OK) {
         MISC_HILOGW("GetString failed, ret:%{public}d", ret);
-        IPCSkeleton::SetCallingIdentity(callingIdentity);
         return ERROR;
     }
-    resultSet->Close();
-    IPCSkeleton::SetCallingIdentity(callingIdentity);
     return ERR_OK;
 }
 
