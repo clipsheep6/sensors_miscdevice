@@ -1212,7 +1212,7 @@ describe("VibratorJsTest", function () {
         if (ret) {
             vibrator.startVibration({
                 type: "preset",
-                effectId: "haptic.effect.soft",
+                effectId: "haptic.effect.hard",
                 count: 1,
                 intensity: 50,
             }, {
