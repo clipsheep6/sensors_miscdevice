@@ -61,6 +61,7 @@ class VibrationPriorityManager {
     DECLARE_DELAYED_SINGLETON(VibrationPriorityManager);
 public:
     DISALLOW_COPY_AND_MOVE(VibrationPriorityManager);
+    bool Init();
     VibrateStatus ShouldIgnoreVibrate(const VibrateInfo &vibrateInfo, std::shared_ptr<VibratorThread> vibratorThread);
 
 private:
@@ -77,7 +78,6 @@ private:
     std::shared_ptr<DataShare::DataShareHelper> CreateDataShareHelper();
     bool ReleaseDataShareHelper(std::shared_ptr<DataShare::DataShareHelper> &helper);
     sptr<MiscDeviceObserver> CreateObserver(const MiscDeviceObserver::UpdateFunc &func);
-    void Initialize();
     void UpdateStatus();
     sptr<IRemoteObject> remoteObj_ { nullptr };
     sptr<MiscDeviceObserver> observer_ { nullptr };

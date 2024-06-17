@@ -24,14 +24,17 @@
 #include <vector>
 
 #include "accesstoken_kit.h"
+#include "common_event_manager.h"
 #include "nocopyable.h"
 #include "system_ability.h"
 #include "thread_ex.h"
+#include "want.h"
 
 #include "file_utils.h"
 #include "json_parser.h"
 #include "light_hdi_connection.h"
 #include "miscdevice_common.h"
+#include "miscdevice_common_event_subscriber.h"
 #include "miscdevice_delayed_sp_singleton.h"
 #include "miscdevice_dump.h"
 #include "miscdevice_service_stub.h"
@@ -99,6 +102,10 @@ private:
     int32_t FindClientPid(const sptr<IRemoteObject> &vibratorServiceClient);
     void DestroyClientPid(const sptr<IRemoteObject> &vibratorServiceClient);
     void OnAddSystemAbility(int32_t systemAbilityId, const std::string &deviceId) override;
+    int32_t SubscribeCommonEvent(const std::string &eventName, EventReceiver receiver);
+    void OnReceiveEvent(const EventFwk::CommonEventData &data);
+    std::mutex isVibrationPriorityReadyMutex_;
+    static bool isVibrationPriorityReady_;
     VibratorHdiConnection &vibratorHdiConnection_ = VibratorHdiConnection::GetInstance();
     LightHdiConnection &lightHdiConnection_ = LightHdiConnection::GetInstance();
     bool lightExist_;
