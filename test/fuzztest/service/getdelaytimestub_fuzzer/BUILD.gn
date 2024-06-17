@@ -23,7 +23,6 @@ ohos_fuzztest("GetDelayTimeStubFuzzTest") {
       "$SUBSYSTEM_DIR/test/fuzztest/service/getdelaytimestub_fuzzer"
 
   include_dirs = [
-    "//third_party/cJSON",
     "$SUBSYSTEM_DIR/interfaces/inner_api/vibrator",
     "$SUBSYSTEM_DIR/frameworks/native/common/include",
     "$SUBSYSTEM_DIR/interfaces/inner_api/light",
@@ -54,6 +53,7 @@ ohos_fuzztest("GetDelayTimeStubFuzzTest") {
     "access_token:libaccesstoken_sdk",
     "access_token:libnativetoken",
     "access_token:libtoken_setproc",
+    "cJSON:cjson",
     "c_utils:utils",
     "drivers_interface_vibrator:libvibrator_proxy_1.1",
     "hilog:libhilog",

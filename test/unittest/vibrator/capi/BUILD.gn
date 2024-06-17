@@ -32,17 +32,14 @@ ohos_unittest("NativeVibratorTest") {
     "access_token:libaccesstoken_sdk",
     "access_token:libnativetoken",
     "access_token:libtoken_setproc",
+    "googletest:gmock",
+    "googletest:gtest_main",
     "hilog:libhilog",
     "init:libbegetutil",
     "ipc:ipc_single",
   ]
 
-  deps = [
-    "$SUBSYSTEM_DIR/frameworks/capi:ohvibrator",
-    "//third_party/googletest:gmock_main",
-    "//third_party/googletest:gtest_main",
-    "//third_party/googletest:gtest_main",
-  ]
+  deps = [ "$SUBSYSTEM_DIR/frameworks/capi:ohvibrator" ]
   resource_config_file =
       "$SUBSYSTEM_DIR/test/unittest/vibrator/capi/resource/ohos_test.xml"
 }
