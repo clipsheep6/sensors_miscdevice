@@ -45,6 +45,26 @@ AsyncCallbackInfo::~AsyncCallbackInfo()
     }
 }
 
+bool CreateInt32Property(napi_env env, napi_value &eventObj, const char* name, int32_t value)
+{
+    CALL_LOG_ENTER;
+    napi_value propValue = nullptr;
+    napi_status status = napi_create_int32(env, value, &propValue);
+    if (status != napi_ok) {
+        MISC_HILOGE("napi_create_int32 fail");
+        return false;
+    }
+    CHKCF((napi_set_named_property(env, eventObj, name, propValue) == napi_ok), "napi_set_named_property fail");
+    return true;
+}
+
+bool IsMatchArrayType(const napi_env &env, const napi_value &value)
+{
+    bool result = false;
+    CHKCF((napi_is_array(env, value, &result) == napi_ok), "napi_is_array fail");
+    return result;
+}
+
 bool IsMatchType(const napi_env &env, const napi_value &value, const napi_valuetype &type)
 {
     napi_valuetype paramType = napi_undefined;
@@ -74,6 +94,16 @@ bool GetInt32Value(const napi_env &env, const napi_value &value, int32_t &result
     CHKCF(napi_typeof(env, value, &valuetype) == napi_ok, "napi_typeof failed");
     CHKCF((valuetype == napi_number), "Wrong argument type. Number expected");
     CHKCF(napi_get_value_int32(env, value, &result) == napi_ok, "napi_get_value_int32 failed");
+    return true;
+}
+
+bool GetDoubleValue(const napi_env &env, const napi_value &value, double &result)
+{
+    CALL_LOG_ENTER;
+    napi_valuetype valuetype = napi_undefined;
+    CHKCF(napi_typeof(env, value, &valuetype) == napi_ok, "napi_typeof failed");
+    CHKCF((valuetype == napi_number), "Wrong argument type. Number expected");
+    CHKCF(napi_get_value_double(env, value, &result) == napi_ok, "napi_get_value_double failed");
     return true;
 }
 
