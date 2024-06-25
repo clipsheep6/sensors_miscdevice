@@ -13,6 +13,23 @@
  * limitations under the License.
  */
 
+/**
+ * @addtogroup Vibrator
+ * @{
+ *
+ * @brief Provides the enums, structs, and error codes used in the vibrator APIs.
+ * @since 11
+ */
+
+/**
+ * @file vibrator_type.h
+ * @kit SensorServiceKit
+ * @brief Declares the common vibrator attributes.
+ * @library libohvibrator.z.so
+ * @syscap SystemCapability.Sensors.MiscDevice
+ * @since 11
+ */
+
 #ifndef VIBRATOR_TYPE_H
 #define VIBRATOR_TYPE_H
 
@@ -86,5 +103,5 @@ typedef struct Vibrator_FileDescription {
 #ifdef __cplusplus
 }
 #endif
-
+/** @} */
 #endif  // endif VIBRATOR_TYPE_H

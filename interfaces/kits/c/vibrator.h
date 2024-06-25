@@ -23,7 +23,7 @@
 
 /**
  * @file vibrator.h
- *
+ * @kit SensorServiceKit
  * @brief Declares the APIs for starting or stopping vibration.
  * @library libohvibrator.z.so
  * @syscap SystemCapability.Sensors.MiscDevice
