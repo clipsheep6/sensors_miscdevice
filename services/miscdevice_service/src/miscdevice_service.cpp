@@ -490,11 +490,12 @@ int32_t MiscdeviceService::PlayVibratorCustom(int32_t vibratorId, const RawFileD
         MISC_HILOGE("Invalid parameter, usage:%{public}d", usage);
         return PARAMETER_ERROR;
     }
+    JsonParser parser(rawFd);
     VibratorDecoderCreator creator;
-    std::unique_ptr<IVibratorDecoder> decoder(creator.CreateDecoder(rawFd));
+    std::unique_ptr<IVibratorDecoder> decoder(creator.CreateDecoder(parser));
     CHKPR(decoder, ERROR);
     VibratePackage package;
-    int32_t ret = decoder->DecodeEffect(rawFd, package);
+    int32_t ret = decoder->DecodeEffect(rawFd, parser, package);
     if (ret != SUCCESS || package.patterns.empty()) {
         MISC_HILOGE("Decode effect error");
         return ERROR;

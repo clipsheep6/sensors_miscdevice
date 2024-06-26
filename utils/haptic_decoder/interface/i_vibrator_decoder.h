@@ -16,6 +16,7 @@
 #ifndef VIBRATOR_DECODER_H
 #define VIBRATOR_DECODER_H
 
+#include "json_parser.h"
 #include "raw_file_descriptor.h"
 #include "vibrator_infos.h"
 
@@ -25,7 +26,8 @@ class IVibratorDecoder {
 public:
     IVibratorDecoder() = default;
     virtual ~IVibratorDecoder() = default;
-    virtual int32_t DecodeEffect(const RawFileDescriptor &rawFd, VibratePackage &patternPackage) = 0;
+    virtual int32_t DecodeEffect(const RawFileDescriptor &rawFd, const JsonParser &parser,
+        VibratePackage &patternPackage) = 0;
 };
 }  // namespace Sensors
 }  // namespace OHOS

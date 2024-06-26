@@ -45,9 +45,9 @@ constexpr int32_t CURVE_FREQUENCY_MAX = 100;
 constexpr int32_t CONTINUOUS_DURATION_MAX = 5000;
 } // namespace
 
-int32_t HEVibratorDecoder::DecodeEffect(const RawFileDescriptor &rawFd, VibratePackage &pkg)
+int32_t HEVibratorDecoder::DecodeEffect(const RawFileDescriptor &rawFd, const JsonParser &parser,
+    VibratePackage &pkg)
 {
-    JsonParser parser(rawFd);
     int32_t version = ParseVersion(parser);
     pkg.patterns.clear();
     switch (version) {
@@ -166,8 +166,9 @@ int32_t HEVibratorDecoder::ParseEvent(const JsonParser &parser, cJSON *eventJSON
         MISC_HILOGE("Unknown event type %{public}s", type.c_str());
         return ERROR;
     }
-    cJSON *indexJSON = parser.GetObjectItem(eventJSON, "Index");
-    if (indexJSON != NULL) {
+    if (parser.HasObjectItem(eventJSON, "Index")) {
+        cJSON *indexJSON = parser.GetObjectItem(eventJSON, "Index");
+        CHKPR(indexJSON, ERROR);
         event.index = cJSON_IsNumber(indexJSON) ? indexJSON->valueint : -1;
     } else {
         event.index = 0;

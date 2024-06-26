@@ -28,7 +28,8 @@ class HEVibratorDecoder : public IVibratorDecoder {
 public:
     HEVibratorDecoder() = default;
     ~HEVibratorDecoder() = default;
-    int32_t DecodeEffect(const RawFileDescriptor &rawFd, VibratePackage &patternPackage) override;
+    int32_t DecodeEffect(const RawFileDescriptor &rawFd, const JsonParser &parser,
+        VibratePackage &patternPackage) override;
 private:
     int32_t ParseVersion(const JsonParser &parser);
     int32_t ParsePatternList(const JsonParser& parser, cJSON* patternListJSON, VibratePackage& pkg);

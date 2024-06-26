@@ -30,20 +30,9 @@ namespace Sensors {
 namespace {
 const std::string JSON_TAG = "Channels";
 } // namespace
-IVibratorDecoder *VibratorDecoderCreator::CreateDecoder(const RawFileDescriptor &fd)
+IVibratorDecoder *VibratorDecoderCreator::CreateDecoder(const JsonParser &parser)
 {
     CALL_LOG_ENTER;
-    DecoderType type = GetDecoderType(fd);
-    if (type == DECODER_TYPE_HE) {
-        MISC_HILOGD("Get he type");
-        HEVibratorDecoderFactory factory;
-        return factory.CreateDecoder();
-    } else if (type == DECODER_TYPE_OH_JSON) {
-        MISC_HILOGD("Get oh_json type");
-        DefaultVibratorDecoderFactory factory;
-        return factory.CreateDecoder();
-    }
-    JsonParser parser(fd);
     if (CheckJsonMetadata(parser)) {
         MISC_HILOGD("Get oh_json tag");
         DefaultVibratorDecoderFactory factory;
@@ -57,34 +46,15 @@ IVibratorDecoder *VibratorDecoderCreator::CreateDecoder(const RawFileDescriptor 
     return nullptr;
 }
 
-DecoderType VibratorDecoderCreator::GetDecoderType(const RawFileDescriptor &rawFd)
-{
-    std::string extName = "";
-    int32_t ret = GetFileExtName(rawFd.fd, extName);
-    if (ret != SUCCESS) {
-        MISC_HILOGE("GetFileExtName failed");
-        return DECODER_TYPE_BUTT;
-    }
-    if (extName == "he") {
-        return DECODER_TYPE_HE;
-    } else if (extName == "json") {
-        return DECODER_TYPE_OH_JSON;
-    } else {
-        MISC_HILOGD("Invalid decoder extend name");
-        return DECODER_TYPE_BUTT;
-    }
-}
-
 bool VibratorDecoderCreator::CheckJsonMetadata(const JsonParser &parser)
 {
-    cJSON *channelItem = parser.GetObjectItem(JSON_TAG);
-    return channelItem != nullptr;
+    return parser.HasObjectItem(JSON_TAG);
 }
 
-extern "C" IVibratorDecoder *Create(const RawFileDescriptor &rawFd)
+extern "C" IVibratorDecoder *Create(const JsonParser &parser)
 {
     VibratorDecoderCreator creator;
-    return creator.CreateDecoder(rawFd);
+    return creator.CreateDecoder(parser);
 }
 
 extern "C" void Destroy(IVibratorDecoder *decoder)

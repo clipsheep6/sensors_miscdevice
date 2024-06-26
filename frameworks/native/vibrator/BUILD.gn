@@ -63,6 +63,7 @@ ohos_shared_library("vibrator_interface_native") {
   ]
 
   external_deps = [
+    "cJSON:cjson",
     "c_utils:utils",
     "hilog:libhilog",
     "init:libbegetutil",

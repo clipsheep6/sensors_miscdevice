@@ -33,7 +33,7 @@ namespace Sensors {
 struct VibratorDecodeHandle {
     void *handle;
     IVibratorDecoder *decoder;
-    IVibratorDecoder *(*create)(const RawFileDescriptor &);
+    IVibratorDecoder *(*create)(const JsonParser &);
     void (*destroy)(IVibratorDecoder *);
 
     VibratorDecodeHandle(): handle(nullptr), decoder(nullptr),
