@@ -38,6 +38,13 @@ if (!defined(global_parts_info) ||
   hdf_drivers_interface_light = false
 }
 
+if (!defined(global_parts_info) ||
+    defined(global_parts_info.resourceschedule_memmgr_override)) {
+  miscdevice_memmgr_enable = true
+} else {
+  miscdevice_memmgr_enable = false
+}
+
 if (build_variant == "root") {
   miscdevice_default_defines += [ "BUILD_VARIANT_ENG" ]
   miscdevice_build_eng = true

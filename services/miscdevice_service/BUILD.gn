@@ -74,12 +74,16 @@ ohos_shared_library("libmiscdevice_service") {
     "hitrace:hitrace_meter",
     "ipc:ipc_single",
     "json:nlohmann_json_static",
-    "memmgr:memmgrclient",
     "safwk:system_ability_fwk",
     "samgr:samgr_proxy",
   ]
 
   defines = miscdevice_default_defines
+
+  if (miscdevice_memmgr_enable) {
+    defines += [ "MEMMGR_ENABLE" ]
+    external_deps += [ "memmgr:memmgrclient" ]
+  }
 
   if (miscdevice_feature_vibrator_custom) {
     external_deps += [ "init:libbegetutil" ]
@@ -157,12 +161,16 @@ ohos_static_library("libmiscdevice_service_static") {
     "hitrace:hitrace_meter",
     "ipc:ipc_single",
     "json:nlohmann_json_static",
-    "memmgr:memmgrclient",
     "safwk:system_ability_fwk",
     "samgr:samgr_proxy",
   ]
 
   defines = miscdevice_default_defines
+
+  if (miscdevice_memmgr_enable) {
+    defines += [ "MEMMGR_ENABLE" ]
+    external_deps += [ "memmgr:memmgrclient" ]
+  }
 
   if (miscdevice_feature_vibrator_custom) {
     external_deps += [ "init:libbegetutil" ]
