@@ -38,44 +38,9 @@ const std::string VIBRATE_PERMISSION = "ohos.permission.VIBRATE";
 const std::string LIGHT_PERMISSION = "ohos.permission.SYSTEM_LIGHT_CONTROL";
 }  // namespace
 
-MiscdeviceServiceStub::MiscdeviceServiceStub()
-{
-    baseFuncs_[static_cast<uint32_t>(MiscdeviceInterfaceCode::VIBRATE)] =
-        &MiscdeviceServiceStub::VibrateStub;
-    baseFuncs_[static_cast<uint32_t>(MiscdeviceInterfaceCode::PLAY_VIBRATOR_EFFECT)] =
-        &MiscdeviceServiceStub::PlayVibratorEffectStub;
-#ifdef OHOS_BUILD_ENABLE_VIBRATOR_CUSTOM
-    baseFuncs_[static_cast<uint32_t>(MiscdeviceInterfaceCode::PLAY_VIBRATOR_CUSTOM)] =
-        &MiscdeviceServiceStub::PlayVibratorCustomStub;
-#endif // OHOS_BUILD_ENABLE_VIBRATOR_CUSTOM
-    baseFuncs_[static_cast<uint32_t>(MiscdeviceInterfaceCode::STOP_VIBRATOR_ALL)] =
-        &MiscdeviceServiceStub::StopVibratorAllStub;
-    baseFuncs_[static_cast<uint32_t>(MiscdeviceInterfaceCode::STOP_VIBRATOR_BY_MODE)] =
-        &MiscdeviceServiceStub::StopVibratorByModeStub;
-    baseFuncs_[static_cast<uint32_t>(MiscdeviceInterfaceCode::IS_SUPPORT_EFFECT)] =
-        &MiscdeviceServiceStub::IsSupportEffectStub;
-    baseFuncs_[static_cast<uint32_t>(MiscdeviceInterfaceCode::GET_LIGHT_LIST)] =
-        &MiscdeviceServiceStub::GetLightListStub;
-    baseFuncs_[static_cast<uint32_t>(MiscdeviceInterfaceCode::TURN_ON)] =
-        &MiscdeviceServiceStub::TurnOnStub;
-    baseFuncs_[static_cast<uint32_t>(MiscdeviceInterfaceCode::TURN_OFF)] =
-        &MiscdeviceServiceStub::TurnOffStub;
-    baseFuncs_[static_cast<uint32_t>(MiscdeviceInterfaceCode::PlAY_PATTERN)] =
-        &MiscdeviceServiceStub::PlayPatternStub;
-    baseFuncs_[static_cast<uint32_t>(MiscdeviceInterfaceCode::GET_DELAY_TIME)] =
-        &MiscdeviceServiceStub::GetDelayTimeStub;
-    baseFuncs_[static_cast<uint32_t>(MiscdeviceInterfaceCode::TRANSFER_CLIENT_REMOTE_OBJECT)] =
-        &MiscdeviceServiceStub::TransferClientRemoteObjectStub;
-    baseFuncs_[static_cast<uint32_t>(MiscdeviceInterfaceCode::PLAY_PRIMITIVE_EFFECT)] =
-        &MiscdeviceServiceStub::PlayPrimitiveEffectStub;
-    baseFuncs_[static_cast<uint32_t>(MiscdeviceInterfaceCode::GET_VIBRATOR_CAPACITY)] =
-        &MiscdeviceServiceStub::GetVibratorCapacityStub;
-}
+MiscdeviceServiceStub::MiscdeviceServiceStub() {}
 
-MiscdeviceServiceStub::~MiscdeviceServiceStub()
-{
-    baseFuncs_.clear();
-}
+MiscdeviceServiceStub::~MiscdeviceServiceStub() {}
 
 int32_t MiscdeviceServiceStub::VibrateStub(MessageParcel &data, MessageParcel &reply)
 {
@@ -278,6 +243,61 @@ int32_t MiscdeviceServiceStub::TurnOffStub(MessageParcel &data, MessageParcel &r
     return TurnOff(lightId);
 }
 
+int32_t MiscdeviceServiceStub::ProcessRemoteRequest(uint32_t code, MessageParcel &data, MessageParcel &reply,
+    MessageOption &option)
+{
+    switch (code) {
+        case static_cast<int32_t>(MiscdeviceInterfaceCode::VIBRATE): {
+            return VibrateStub(data, reply);
+        }
+        case static_cast<int32_t>(MiscdeviceInterfaceCode::PLAY_VIBRATOR_EFFECT): {
+            return PlayVibratorEffectStub(data, reply);
+        }
+#ifdef OHOS_BUILD_ENABLE_VIBRATOR_CUSTOM
+        case static_cast<int32_t>(MiscdeviceInterfaceCode::PLAY_VIBRATOR_CUSTOM): {
+            return PlayVibratorCustomStub(data, reply);
+        }
+#endif // OHOS_BUILD_ENABLE_VIBRATOR_CUSTOM
+        case static_cast<int32_t>(MiscdeviceInterfaceCode::STOP_VIBRATOR_ALL): {
+            return StopVibratorAllStub(data, reply);
+        }
+        case static_cast<int32_t>(MiscdeviceInterfaceCode::STOP_VIBRATOR_BY_MODE): {
+            return StopVibratorByModeStub(data, reply);
+        }
+        case static_cast<int32_t>(MiscdeviceInterfaceCode::IS_SUPPORT_EFFECT): {
+            return IsSupportEffectStub(data, reply);
+        }
+        case static_cast<int32_t>(MiscdeviceInterfaceCode::GET_LIGHT_LIST): {
+            return GetLightListStub(data, reply);
+        }
+        case static_cast<int32_t>(MiscdeviceInterfaceCode::TURN_ON): {
+            return TurnOnStub(data, reply);
+        }
+        case static_cast<int32_t>(MiscdeviceInterfaceCode::TURN_OFF): {
+            return TurnOffStub(data, reply);
+        }
+        case static_cast<int32_t>(MiscdeviceInterfaceCode::PlAY_PATTERN): {
+            return PlayPatternStub(data, reply);
+        }
+        case static_cast<int32_t>(MiscdeviceInterfaceCode::GET_DELAY_TIME): {
+            return GetDelayTimeStub(data, reply);
+        }
+        case static_cast<int32_t>(MiscdeviceInterfaceCode::TRANSFER_CLIENT_REMOTE_OBJECT): {
+            return TransferClientRemoteObjectStub(data, reply);
+        }
+        case static_cast<int32_t>(MiscdeviceInterfaceCode::PLAY_PRIMITIVE_EFFECT): {
+            return PlayPrimitiveEffectStub(data, reply);
+        }
+        case static_cast<int32_t>(MiscdeviceInterfaceCode::GET_VIBRATOR_CAPACITY): {
+            return GetVibratorCapacityStub(data, reply);
+        }
+        default: {
+            MISC_HILOGD("Remoterequest no member function default process");
+            return IPCObjectStub::OnRemoteRequest(code, data, reply, option);
+        }
+    }
+}
+
 int32_t MiscdeviceServiceStub::OnRemoteRequest(uint32_t code, MessageParcel &data, MessageParcel &reply,
                                                MessageOption &option)
 {
@@ -288,15 +308,7 @@ int32_t MiscdeviceServiceStub::OnRemoteRequest(uint32_t code, MessageParcel &dat
         MISC_HILOGE("Client and service descriptors are inconsistent");
         return OBJECT_NULL;
     }
-    auto itFunc = baseFuncs_.find(code);
-    if (itFunc != baseFuncs_.end()) {
-        auto memberFunc = itFunc->second;
-        if (memberFunc != nullptr) {
-            return (this->*memberFunc)(data, reply);
-        }
-    }
-    MISC_HILOGD("Remoterequest no member function default process");
-    return IPCObjectStub::OnRemoteRequest(code, data, reply, option);
+    return ProcessRemoteRequest(code, data, reply, option);
 }
 
 int32_t MiscdeviceServiceStub::PlayPatternStub(MessageParcel &data, MessageParcel &reply)
