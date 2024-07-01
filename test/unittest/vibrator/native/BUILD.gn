@@ -31,8 +31,8 @@ ohos_unittest("VibratorAgentTest") {
 
   external_deps = [
     "access_token:libaccesstoken_sdk",
-    "access_token:libnativetoken",
-    "access_token:libtoken_setproc",
+    "access_token:libnativetoken_shared",
+    "access_token:libtokensetproc_shared",
     "c_utils:utils",
     "googletest:gmock",
     "googletest:gtest_main",
