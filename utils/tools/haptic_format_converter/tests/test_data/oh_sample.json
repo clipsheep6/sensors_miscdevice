@@ -1,0 +1,55 @@
+{
+  "MetaData": {
+    "Version": 1.0,
+    "ChannelNumber": 1
+  },
+  "Channels": [
+    {
+      "Parameters": {
+        "Index": 0
+      },
+      "Pattern": [
+        {
+          "Event": {
+            "Type": "transient",
+            "StartTime": 0,
+            "Parameters": {
+              "Intensity": 100,
+              "Frequency": 100
+            }
+          }
+        },
+        {
+          "Event": {
+            "Type": "continuous",
+            "StartTime": 500,
+            "Duration": 1000,
+            "Parameters": {
+              "Intensity": 75,
+              "Frequency": 100,
+              "Curve": [
+                {
+                  "Time": 0,
+                  "Intensity": 50
+                },
+                {
+                  "Time": 100,
+                  "Intensity": 70
+                },
+                {
+                  "Time": 300,
+                  "Intensity": 80
+                },
+                {
+                  "Time": 500,
+                  "Intensity": 100
+                }
+              ]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}
+

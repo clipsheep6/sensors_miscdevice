@@ -1,0 +1,164 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "HE HapticJsonSchema V2",
+  "type": "object",
+  "properties": {
+    "Metadata": {
+      "type": "object",
+      "properties": {
+        "Version": {
+          "type": "integer",
+          "enum": [2],
+          "description": "Supported version is 2"
+        }
+      },
+      "required": ["Version"]
+    },
+    "PatternList": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "AbsoluteTime": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "Absolute start time of the pattern. Should be greater than the previous pattern's start time."
+          },
+          "Pattern": {
+            "type": "array",
+            "items": {
+              "$ref": "#/definitions/Event"
+            },
+            "minItems": 1,
+            "maxItems": 16,
+            "description": "List of events in the pattern"
+          }
+        },
+        "required": ["AbsoluteTime", "Pattern"]
+      },
+      "minItems": 1,
+      "description": "List of patterns with absolute start times. Required and only applicable for version 2."
+    }
+  },
+  "definitions": {
+    "Event": {
+      "type": "object",
+      "properties": {
+        "Type": {
+          "type": "string",
+          "enum": ["transient", "continuous"],
+          "description": "Type of the event, can be transient or continuous"
+        },
+        "Duration": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 5000,
+          "description": "Duration of the event in milliseconds. Only applicable for continuous events."
+        },
+        "Index": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 2,
+          "default": 0,
+          "description": "Index of the event"
+        },
+        "RelativeTime": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Relative start time of the event within the pattern"
+        },
+        "Parameters": {
+          "type": "object",
+          "properties": {
+            "Intensity": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 100,
+              "description": "Intensity of the event"
+            },
+            "Frequency": {
+              "type": "integer",
+              "minimum": -100,
+              "maximum": 150,
+              "description": "Frequency of the event"
+            },
+            "Curve": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "Time": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "description": "Relative time of the curve point within the event duration"
+                  },
+                  "Intensity": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 100,
+                    "description": "Intensity of the curve point, scaled from 0 to 100"
+                  },
+                  "Frequency": {
+                    "type": "integer",
+                    "minimum": -100,
+                    "maximum": 100,
+                    "description": "Frequency of the curve point"
+                  }
+                },
+                "required": ["Time", "Intensity", "Frequency"]
+              },
+              "minItems": 4,
+              "maxItems": 16,
+              "description": "Curve points defining the haptic effect over time. Only applicable for continuous events."
+            }
+          },
+          "required": ["Intensity", "Frequency"]
+        }
+      },
+      "required": ["Type", "RelativeTime", "Parameters"],
+      "if": {
+        "properties": { "Type": { "const": "transient" } }
+      },
+      "then": {
+        "properties": {
+          "Duration": {
+            "const": 48,
+            "description": "Duration for transient events is fixed to 48 milliseconds"
+          },
+          "Parameters": {
+            "properties": {
+              "Frequency": {
+                "minimum": -50,
+                "maximum": 150
+              }
+            }
+          }
+        }
+      },
+      "else": {
+        "properties": {
+          "Parameters": {
+            "properties": {
+              "Frequency": {
+                "minimum": 0,
+                "maximum": 100
+              },
+              "Curve": {
+                "minItems": 4,
+                "maxItems": 16
+              }
+            },
+            "required": ["Curve"]
+          },
+          "Duration": {
+            "minimum": 1,
+            "maximum": 5000
+          }
+        },
+        "required": ["Duration"]
+      }
+    }
+  },
+  "required": ["Metadata", "PatternList"]
+}
+

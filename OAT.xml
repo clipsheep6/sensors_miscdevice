@@ -33,6 +33,7 @@
         <filefilterlist>
             <filefilter name="defaultFilter" desc="Files not to check">
                 <filteritem type="filename" name="*.json" desc=""/>
+                <filteritem type="filename" name="*.he" dese=".he is actually a json format haptic file"/>
                 <filteritem type="filepath" name="dir name underproject/.*.uvwxyz" desc="Describe the reason for filtering scan results"/>
                 <filteritem type="filepath" name="projectroot/[a-zA-Z0-9]{20,}.sh" desc="Temp files"/>
             </filefilter>

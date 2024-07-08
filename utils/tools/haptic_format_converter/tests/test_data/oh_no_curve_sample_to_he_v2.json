@@ -1,0 +1,28 @@
+{
+  "Metadata": {
+    "Version": 2
+  },
+  "PatternList": [
+    {
+      "AbsoluteTime": 100,
+      "Pattern": [
+        {
+          "Type": "continuous",
+          "RelativeTime": 0,
+          "Duration": 1200,
+          "Parameters": {
+            "Intensity": 90,
+            "Frequency": 60,
+            "Curve": [
+              {"Time": 0, "Intensity": 100, "Frequency": 0},
+              {"Time": 1, "Intensity": 100, "Frequency": 0},
+              {"Time": 2, "Intensity": 100, "Frequency": 0},
+              {"Time": 3, "Intensity": 100, "Frequency": 0}
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
+

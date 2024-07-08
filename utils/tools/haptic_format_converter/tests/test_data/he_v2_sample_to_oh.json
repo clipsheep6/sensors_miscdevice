@@ -1,0 +1,101 @@
+{
+  "MetaData": {
+    "Version": 1.0,
+    "ChannelNumber": 1
+  },
+  "Channels": [
+    {
+      "Parameters": {
+        "Index": 0
+      },
+      "Pattern": [
+        {
+          "Event": {
+            "Type": "transient",
+            "StartTime": 0,
+            "Parameters": {
+              "Intensity": 100,
+              "Frequency": 100
+            }
+          }
+        },
+        {
+          "Event": {
+            "Type": "continuous",
+            "StartTime": 500,
+            "Duration": 1000,
+            "Parameters": {
+              "Intensity": 75,
+              "Frequency": 100,
+              "Curve": [
+                {
+                  "Time": 0,
+                  "Intensity": 50,
+                  "Frequency": 0
+                },
+                {
+                  "Time": 100,
+                  "Intensity": 70,
+                  "Frequency": 10
+                },
+                {
+                  "Time": 300,
+                  "Intensity": 80,
+                  "Frequency": 20
+                },
+                {
+                  "Time": 500,
+                  "Intensity": 100,
+                  "Frequency": 30
+                }
+              ]
+            }
+          }
+        },
+        {
+          "Event": {
+            "Type": "transient",
+            "StartTime": 5000,
+            "Parameters": {
+              "Intensity": 80,
+              "Frequency": 100
+            }
+          }
+        },
+        {
+          "Event": {
+            "Type": "continuous",
+            "StartTime": 5200,
+            "Duration": 1500,
+            "Parameters": {
+              "Intensity": 60,
+              "Frequency": 90,
+              "Curve": [
+                {
+                  "Time": 0,
+                  "Intensity": 30,
+                  "Frequency": -10
+                },
+                {
+                  "Time": 200,
+                  "Intensity": 50,
+                  "Frequency": 0
+                },
+                {
+                  "Time": 600,
+                  "Intensity": 70,
+                  "Frequency": 10
+                },
+                {
+                  "Time": 1500,
+                  "Intensity": 90,
+                  "Frequency": 20
+                }
+              ]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

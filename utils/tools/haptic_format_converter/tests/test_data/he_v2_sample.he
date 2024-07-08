@@ -1,0 +1,95 @@
+{
+  "Metadata": {
+    "Version": 2
+  },
+  "PatternList": [
+    {
+      "AbsoluteTime": 0,
+      "Pattern": [
+        {
+          "Type": "transient",
+          "RelativeTime": 0,
+          "Parameters": {
+            "Intensity": 100,
+            "Frequency": 100
+          }
+        },
+        {
+          "Type": "continuous",
+          "RelativeTime": 500,
+          "Duration": 1000,
+          "Parameters": {
+            "Intensity": 75,
+            "Frequency": 100,
+            "Curve": [
+              {
+                "Time": 0,
+                "Intensity": 50,
+                "Frequency": 0
+              },
+              {
+                "Time": 100,
+                "Intensity": 70,
+                "Frequency": 10
+              },
+              {
+                "Time": 300,
+                "Intensity": 80,
+                "Frequency": 20
+              },
+              {
+                "Time": 500,
+                "Intensity": 100,
+                "Frequency": 30
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "AbsoluteTime": 5000,
+      "Pattern": [
+        {
+          "Type": "transient",
+          "RelativeTime": 0,
+          "Parameters": {
+            "Intensity": 80,
+            "Frequency": 100
+          }
+        },
+        {
+          "Type": "continuous",
+          "RelativeTime":200,
+          "Duration": 1500,
+          "Parameters": {
+            "Intensity": 60,
+            "Frequency": 90,
+            "Curve": [
+              {
+                "Time": 0,
+                "Intensity": 30,
+                "Frequency": -10
+              },
+              {
+                "Time": 200,
+                "Intensity": 50,
+                "Frequency": 0
+              },
+              {
+                "Time": 600,
+                "Intensity": 70,
+                "Frequency": 10
+              },
+              {
+                "Time": 1500,
+                "Intensity": 90,
+                "Frequency": 20
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
