@@ -15,8 +15,11 @@
 
 #include "vibration_priority_manager.h"
 
+#include "bundle_mgr_client.h"
 #include "ipc_skeleton.h"
 #include "iservice_registry.h"
+#include "os_account_manager.h"
+#include "running_process_info.h"
 #include "system_ability_definition.h"
 #include "uri.h"
 
@@ -168,6 +171,53 @@ void VibrationPriorityManager::UpdateStatus()
     }
 }
 
+bool VibrationPriorityManager::ShouldIgnoreInputMethod(const VibrateInfo &vibrateInfo)
+{
+    int32_t pid = vibrateInfo.pid;
+    AppExecFwk::RunningProcessInfo processinfo{};
+    appMgrClientPtr_ = DelayedSingleton<AppExecFwk::AppMgrClient>::GetInstance();
+    if (appMgrClientPtr_ == nullptr) {
+        MISC_HILOGE("appMgrClientPtr is nullptr");
+        return false;
+    }
+    int32_t ret = appMgrClientPtr_->AppExecFwk::AppMgrClient::GetRunningProcessInfoByPid(pid, processinfo);
+    if (ret != ERR_OK) {
+        MISC_HILOGE("Getrunningprocessinfobypid failed");
+        return false;
+    }
+    if (processinfo.extensionType_ == AppExecFwk::ExtensionAbilityType::INPUTMETHOD) {
+        return true;
+    }
+    std::vector<int32_t> activeUserIds;
+    int retId = AccountSA::OsAccountManager::QueryActiveOsAccountIds(activeUserIds);
+    if (retId != 0) {
+        MISC_HILOGE("QueryActiveOsAccountIds failed %{public}d", retId);
+        return false;
+    }
+    if (activeUserIds.empty()) {
+        MISC_HILOGE("activeUserId empty");
+        return false;
+    }
+    for (const auto &bundleName : processinfo.bundleNames) {
+        MISC_HILOGD("bundleName = %{public}s", bundleName.c_str());
+        AppExecFwk::BundleMgrClient bundleMgrClient;
+        AppExecFwk::BundleInfo bundleInfo;
+        auto res = bundleMgrClient.AppExecFwk::BundleMgrClient::GetBundleInfo(bundleName,
+            AppExecFwk::BundleFlag::GET_BUNDLE_WITH_EXTENSION_INFO, bundleInfo, activeUserIds[0]);
+        if (!res) {
+            MISC_HILOGE("Getbundleinfo fail");
+            return false;
+        }
+        for (const auto &extensionInfo : bundleInfo.extensionInfos) {
+            if (extensionInfo.type == AppExecFwk::ExtensionAbilityType::INPUTMETHOD) {
+                MISC_HILOGD("extensioninfo type is %{public}d", extensionInfo.type);
+                return true;
+            }
+        }
+    }
+    return false;
+}
+
 VibrateStatus VibrationPriorityManager::ShouldIgnoreVibrate(const VibrateInfo &vibrateInfo,
     std::shared_ptr<VibratorThread> vibratorThread)
 {
@@ -176,14 +226,15 @@ VibrateStatus VibrationPriorityManager::ShouldIgnoreVibrate(const VibrateInfo &v
         return VIBRATION;
     }
     UpdateStatus();
-    if ((vibrateInfo.usage == USAGE_ALARM || vibrateInfo.usage == USAGE_RING || vibrateInfo.usage == USAGE_NOTIFICATION
+    if ((vibrateInfo.usage == USAGE_ALARM || vibrateInfo.usage == USAGE_RING ||
+        vibrateInfo.usage == USAGE_NOTIFICATION
         || vibrateInfo.usage == USAGE_COMMUNICATION) && (miscAudioRingerMode_ == RINGER_MODE_SILENT)) {
         MISC_HILOGD("Vibration is ignored for ringer mode:%{public}d", static_cast<int32_t>(miscAudioRingerMode_));
         return IGNORE_RINGER_MODE;
     }
-    if ((vibrateInfo.usage == USAGE_TOUCH || vibrateInfo.usage == USAGE_MEDIA || vibrateInfo.usage == USAGE_UNKNOWN
+    if (((vibrateInfo.usage == USAGE_TOUCH || vibrateInfo.usage == USAGE_MEDIA || vibrateInfo.usage == USAGE_UNKNOWN
         || vibrateInfo.usage == USAGE_PHYSICAL_FEEDBACK || vibrateInfo.usage == USAGE_SIMULATE_REALITY)
-        && (miscFeedback_ == FEEDBACK_MODE_OFF)) {
+        && (miscFeedback_ == FEEDBACK_MODE_OFF)) && !ShouldIgnoreInputMethod(vibrateInfo)) {
         MISC_HILOGD("Vibration is ignored for feedback:%{public}d", static_cast<int32_t>(miscFeedback_));
         return IGNORE_FEEDBACK;
     }

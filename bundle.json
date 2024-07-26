@@ -25,6 +25,7 @@
         "ability_runtime",
         "access_token",
         "bounds_checking_function",
+        "bundle_framework",
         "common_event_service",
         "c_utils",
         "data_share",
@@ -38,6 +39,7 @@
         "json",
         "memmgr",
         "napi",
+        "os_account",
         "safwk",
         "samgr",
         "cJSON"
