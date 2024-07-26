@@ -174,7 +174,7 @@ void VibrationPriorityManager::UpdateStatus()
 bool VibrationPriorityManager::ShouldIgnoreInputMethod(const VibrateInfo &vibrateInfo)
 {
     int32_t pid = vibrateInfo.pid;
-    AppExecFwk::RunningProcessInfo processinfo{};
+    AppExecFwk::RunningProcessInfo processinfo;
     appMgrClientPtr_ = DelayedSingleton<AppExecFwk::AppMgrClient>::GetInstance();
     if (appMgrClientPtr_ == nullptr) {
         MISC_HILOGE("appMgrClientPtr is nullptr");
@@ -189,7 +189,7 @@ bool VibrationPriorityManager::ShouldIgnoreInputMethod(const VibrateInfo &vibrat
         return true;
     }
     std::vector<int32_t> activeUserIds;
-    int retId = AccountSA::OsAccountManager::QueryActiveOsAccountIds(activeUserIds);
+    int32_t retId = AccountSA::OsAccountManager::QueryActiveOsAccountIds(activeUserIds);
     if (retId != 0) {
         MISC_HILOGE("QueryActiveOsAccountIds failed %{public}d", retId);
         return false;
