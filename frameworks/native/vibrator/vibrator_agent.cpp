@@ -30,6 +30,7 @@ namespace {
 constexpr int32_t DEFAULT_VIBRATOR_ID = 123;
 int32_t g_loopCount = 1;
 int32_t g_usage = USAGE_UNKNOWN;
+bool g_systemUsage = false;
 VibratorParameter g_vibratorParameter;
 const std::string PHONE_TYPE = "phone";
 const int32_t INTENSITY_ADJUST_MIN = 0;
@@ -71,9 +72,10 @@ int32_t StartVibrator(const char *effectId)
     MISC_HILOGD("Time delay measurement:start time");
     CHKPR(effectId, PARAMETER_ERROR);
     auto &client = VibratorServiceClient::GetInstance();
-    int32_t ret = client.Vibrate(DEFAULT_VIBRATOR_ID, effectId, g_loopCount, g_usage);
+    int32_t ret = client.Vibrate(DEFAULT_VIBRATOR_ID, effectId, g_loopCount, g_usage, g_systemUsage);
     g_loopCount = 1;
     g_usage = USAGE_UNKNOWN;
+    g_systemUsage = false;
     if (ret != ERR_OK) {
         MISC_HILOGD("Vibrate effectId failed, ret:%{public}d", ret);
         return NormalizeErrCode(ret);
@@ -88,8 +90,9 @@ int32_t StartVibratorOnce(int32_t duration)
         return PARAMETER_ERROR;
     }
     auto &client = VibratorServiceClient::GetInstance();
-    int32_t ret = client.Vibrate(DEFAULT_VIBRATOR_ID, duration, g_usage);
+    int32_t ret = client.Vibrate(DEFAULT_VIBRATOR_ID, duration, g_usage, g_systemUsage);
     g_usage = USAGE_UNKNOWN;
+    g_systemUsage = false;
     if (ret != ERR_OK) {
         MISC_HILOGD("Vibrate duration failed, ret:%{public}d", ret);
         return NormalizeErrCode(ret);
@@ -118,8 +121,9 @@ int32_t PlayVibratorCustom(int32_t fd, int64_t offset, int64_t length)
         .offset = offset,
         .length = length
     };
-    int32_t ret = client.PlayVibratorCustom(DEFAULT_VIBRATOR_ID, rawFd, g_usage, g_vibratorParameter);
+    int32_t ret = client.PlayVibratorCustom(DEFAULT_VIBRATOR_ID, rawFd, g_usage, g_systemUsage, g_vibratorParameter);
     g_usage = USAGE_UNKNOWN;
+    g_systemUsage = false;
     g_vibratorParameter.intensity = INTENSITY_ADJUST_MAX;
     g_vibratorParameter.frequency = 0;
     if (ret != ERR_OK) {
@@ -160,13 +164,14 @@ int32_t Cancel()
     return SUCCESS;
 }
 
-bool SetUsage(int32_t usage)
+bool SetUsage(int32_t usage, bool systemUsage)
 {
     if ((usage < 0) || (usage >= USAGE_MAX)) {
         MISC_HILOGE("Input invalid, usage is %{public}d", usage);
         return false;
     }
     g_usage = usage;
+    g_systemUsage = systemUsage;
     return true;
 }
 
@@ -213,8 +218,9 @@ int32_t GetDelayTime(int32_t &delayTime)
 int32_t PlayPattern(const VibratorPattern &pattern)
 {
     auto &client = VibratorServiceClient::GetInstance();
-    int32_t ret = client.PlayPattern(pattern, g_usage, g_vibratorParameter);
+    int32_t ret = client.PlayPattern(pattern, g_usage, g_systemUsage, g_vibratorParameter);
     g_usage = USAGE_UNKNOWN;
+    g_systemUsage = false;
     g_vibratorParameter.intensity = INTENSITY_ADJUST_MAX;
     g_vibratorParameter.frequency = 0;
     if (ret != ERR_OK) {
@@ -252,9 +258,11 @@ int32_t PlayPrimitiveEffect(const char *effectId, int32_t intensity)
     MISC_HILOGD("Time delay measurement:start time");
     CHKPR(effectId, PARAMETER_ERROR);
     auto &client = VibratorServiceClient::GetInstance();
-    int32_t ret = client.PlayPrimitiveEffect(DEFAULT_VIBRATOR_ID, effectId, intensity, g_usage, g_loopCount);
+    int32_t ret = client.PlayPrimitiveEffect(DEFAULT_VIBRATOR_ID, effectId, intensity,
+        g_usage, g_systemUsage, g_loopCount);
     g_loopCount = 1;
     g_usage = USAGE_UNKNOWN;
+    g_systemUsage = false;
     if (ret != ERR_OK) {
         MISC_HILOGD("Play primitive effect failed, ret:%{public}d", ret);
         return NormalizeErrCode(ret);

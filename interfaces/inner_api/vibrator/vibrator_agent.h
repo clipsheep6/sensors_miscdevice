@@ -129,7 +129,7 @@ int32_t Cancel();
  *
  * @since 9
  */
-bool SetUsage(int32_t usage);
+bool SetUsage(int32_t usage, bool systemUsage = false);
 
 /**
  * @brief Query whether the HdHaptic is supported.

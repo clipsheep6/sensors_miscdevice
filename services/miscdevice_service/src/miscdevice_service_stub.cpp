@@ -55,11 +55,13 @@ int32_t MiscdeviceServiceStub::VibrateStub(MessageParcel &data, MessageParcel &r
     int32_t vibratorId;
     int32_t duration;
     int32_t usage;
-    if ((!data.ReadInt32(vibratorId)) || (!data.ReadInt32(duration)) || (!data.ReadInt32(usage))) {
+    bool systemUsage;
+    if ((!data.ReadInt32(vibratorId)) || (!data.ReadInt32(duration)) || (!data.ReadInt32(usage))||
+        (!data.ReadBool(systemUsage))) {
         MISC_HILOGE("Parcel read failed");
         return ERROR;
     }
-    return Vibrate(vibratorId, duration, usage);
+    return Vibrate(vibratorId, duration, usage, systemUsage);
 }
 
 int32_t MiscdeviceServiceStub::StopVibratorAllStub(MessageParcel &data, MessageParcel &reply)
@@ -94,12 +96,13 @@ int32_t MiscdeviceServiceStub::PlayVibratorEffectStub(MessageParcel &data, Messa
     std::string effect;
     int32_t count;
     int32_t usage;
+    bool systemUsage;
     if ((!data.ReadInt32(vibratorId)) || (!data.ReadString(effect)) ||
-        (!data.ReadInt32(count)) || (!data.ReadInt32(usage))) {
+        (!data.ReadInt32(count)) || (!data.ReadInt32(usage)) || (!data.ReadBool(systemUsage))) {
         MISC_HILOGE("Parcel read failed");
         return ERROR;
     }
-    return PlayVibratorEffect(vibratorId, effect, count, usage);
+    return PlayVibratorEffect(vibratorId, effect, count, usage, systemUsage);
 }
 
 int32_t MiscdeviceServiceStub::StopVibratorByModeStub(MessageParcel &data, MessageParcel &reply)
@@ -157,8 +160,9 @@ int32_t MiscdeviceServiceStub::PlayVibratorCustomStub(MessageParcel &data, Messa
         return ERROR;
     }
     int32_t usage;
-    if (!data.ReadInt32(usage)) {
-        MISC_HILOGE("Parcel read usage failed");
+    bool systemUsage;
+    if (!data.ReadInt32(usage) || !data.ReadBool(systemUsage)) {
+        MISC_HILOGE("Parcel read failed");
         return ERROR;
     }
     VibrateParameter vibrateParameter;
@@ -181,7 +185,7 @@ int32_t MiscdeviceServiceStub::PlayVibratorCustomStub(MessageParcel &data, Messa
         MISC_HILOGE("Parcel ReadFileDescriptor failed");
         return ERROR;
     }
-    ret = PlayVibratorCustom(vibratorId, rawFd, usage, parameter.value());
+    ret = PlayVibratorCustom(vibratorId, rawFd, usage, systemUsage, parameter.value());
     close(rawFd.fd);
     if (ret != ERR_OK) {
         MISC_HILOGD("PlayVibratorCustom failed, ret:%{public}d", ret);
@@ -333,13 +337,18 @@ int32_t MiscdeviceServiceStub::PlayPatternStub(MessageParcel &data, MessageParce
         MISC_HILOGE("Parcel read usage failed");
         return ERROR;
     }
+    bool systemUsage = false;
+    if (!data.ReadBool(systemUsage)) {
+        MISC_HILOGE("Parcel read systemUsage failed");
+        return ERROR;
+    }
     VibrateParameter vibrateParameter;
     auto parameter = vibrateParameter.Unmarshalling(data);
     if (!parameter.has_value()) {
         MISC_HILOGE("Parameter Unmarshalling failed");
         return ERROR;
     }
-    return PlayPattern(pattern.value(), usage, parameter.value());
+    return PlayPattern(pattern.value(), usage, systemUsage, parameter.value());
 }
 
 int32_t MiscdeviceServiceStub::GetDelayTimeStub(MessageParcel &data, MessageParcel &reply)
@@ -382,13 +391,15 @@ int32_t MiscdeviceServiceStub::PlayPrimitiveEffectStub(MessageParcel &data, Mess
     std::string effect;
     int32_t intensity = 0;
     int32_t usage = 0;
+    bool systemUsage = false;
     int32_t count = 0;
     if ((!data.ReadInt32(vibratorId)) || (!data.ReadString(effect)) ||
-        (!data.ReadInt32(intensity)) || (!data.ReadInt32(usage)) || (!data.ReadInt32(count))) {
+        (!data.ReadInt32(intensity)) || (!data.ReadInt32(usage)) || (!data.ReadBool(systemUsage)) ||
+        (!data.ReadInt32(count))) {
         MISC_HILOGE("Parcel read failed");
         return ERROR;
     }
-    return PlayPrimitiveEffect(vibratorId, effect, intensity, usage, count);
+    return PlayPrimitiveEffect(vibratorId, effect, intensity, usage, systemUsage, count);
 }
 
 int32_t MiscdeviceServiceStub::GetVibratorCapacityStub(MessageParcel &data, MessageParcel &reply)

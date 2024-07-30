@@ -310,7 +310,7 @@ bool MiscdeviceService::ShouldIgnoreVibrate(const VibrateInfo &info)
     return (PriorityManager->ShouldIgnoreVibrate(info, vibratorThread_) != VIBRATION);
 }
 
-int32_t MiscdeviceService::Vibrate(int32_t vibratorId, int32_t timeOut, int32_t usage)
+int32_t MiscdeviceService::Vibrate(int32_t vibratorId, int32_t timeOut, int32_t usage, bool systemUsage)
 {
     if ((timeOut <= MIN_VIBRATOR_TIME) || (timeOut > MAX_VIBRATOR_TIME)
         || (usage >= USAGE_MAX) || (usage < 0)) {
@@ -323,6 +323,7 @@ int32_t MiscdeviceService::Vibrate(int32_t vibratorId, int32_t timeOut, int32_t 
         .pid = GetCallingPid(),
         .uid = GetCallingUid(),
         .usage = usage,
+        .systemUsage = systemUsage,
         .duration = timeOut
     };
     std::lock_guard<std::mutex> lock(vibratorThreadMutex_);
@@ -366,7 +367,7 @@ int32_t MiscdeviceService::StopVibrator(int32_t vibratorId)
 }
 
 int32_t MiscdeviceService::PlayVibratorEffect(int32_t vibratorId, const std::string &effect,
-    int32_t count, int32_t usage)
+    int32_t count, int32_t usage, bool systemUsage)
 {
     if ((count < MIN_VIBRATOR_COUNT) || (count > MAX_VIBRATOR_COUNT) || (usage >= USAGE_MAX) || (usage < 0)) {
         MISC_HILOGE("Invalid parameter");
@@ -387,6 +388,7 @@ int32_t MiscdeviceService::PlayVibratorEffect(int32_t vibratorId, const std::str
         .pid = GetCallingPid(),
         .uid = GetCallingUid(),
         .usage = usage,
+        .systemUsage = systemUsage,
         .duration = effectInfo->duration,
         .effect = effect,
         .count = count,
@@ -483,7 +485,7 @@ std::string MiscdeviceService::GetCurrentTime()
 
 #ifdef OHOS_BUILD_ENABLE_VIBRATOR_CUSTOM
 int32_t MiscdeviceService::PlayVibratorCustom(int32_t vibratorId, const RawFileDescriptor &rawFd, int32_t usage,
-    const VibrateParameter &parameter)
+    bool systemUsage, const VibrateParameter &parameter)
 {
     if (!(g_capacity.isSupportHdHaptic || g_capacity.isSupportPresetMapping || g_capacity.isSupportTimeDelay)) {
         MISC_HILOGE("The device does not support this operation");
@@ -510,6 +512,7 @@ int32_t MiscdeviceService::PlayVibratorCustom(int32_t vibratorId, const RawFileD
         .pid = GetCallingPid(),
         .uid = GetCallingUid(),
         .usage = usage,
+        .systemUsage = systemUsage,
         .package = package,
     };
     if (g_capacity.isSupportHdHaptic) {
@@ -645,7 +648,7 @@ int32_t MiscdeviceService::Dump(int32_t fd, const std::vector<std::u16string> &a
 }
 
 int32_t MiscdeviceService::PlayPattern(const VibratePattern &pattern, int32_t usage,
-    const VibrateParameter &parameter)
+    bool systemUsage, const VibrateParameter &parameter)
 {
     if ((usage >= USAGE_MAX) || (usage < 0) || (!CheckVibratorParmeters(parameter))) {
         MISC_HILOGE("Invalid parameter, usage:%{public}d", usage);
@@ -667,6 +670,7 @@ int32_t MiscdeviceService::PlayPattern(const VibratePattern &pattern, int32_t us
         .pid = GetCallingPid(),
         .uid = GetCallingUid(),
         .usage = usage,
+        .systemUsage = systemUsage
     };
     if (g_capacity.isSupportHdHaptic) {
         std::lock_guard<std::mutex> lock(vibratorThreadMutex_);
@@ -848,7 +852,7 @@ void MiscdeviceService::DestroyClientPid(const sptr<IRemoteObject> &vibratorServ
 }
 
 int32_t MiscdeviceService::PlayPrimitiveEffect(int32_t vibratorId, const std::string &effect,
-    int32_t intensity, int32_t usage, int32_t count)
+    int32_t intensity, int32_t usage, bool systemUsage, int32_t count)
 {
     if ((intensity <= INTENSITY_MIN) || (intensity > INTENSITY_MAX) || (usage >= USAGE_MAX) || (usage < 0)) {
         MISC_HILOGE("Invalid parameter");
@@ -869,6 +873,7 @@ int32_t MiscdeviceService::PlayPrimitiveEffect(int32_t vibratorId, const std::st
         .pid = GetCallingPid(),
         .uid = GetCallingUid(),
         .usage = usage,
+        .systemUsage = systemUsage,
         .duration = effectInfo->duration,
         .effect = effect,
         .count = count,

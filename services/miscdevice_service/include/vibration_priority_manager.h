@@ -81,6 +81,8 @@ private:
     bool ReleaseDataShareHelper(std::shared_ptr<DataShare::DataShareHelper> &helper);
     sptr<MiscDeviceObserver> CreateObserver(const MiscDeviceObserver::UpdateFunc &func);
     void UpdateStatus();
+    bool IsSystemServiceCalling();
+    bool IsSystemCalling();
     sptr<IRemoteObject> remoteObj_ { nullptr };
     sptr<MiscDeviceObserver> observer_ { nullptr };
     std::shared_ptr<AppExecFwk::AppMgrClient> appMgrClientPtr_ {nullptr};

@@ -36,12 +36,12 @@ public:
     IMiscdeviceService() = default;
     virtual ~IMiscdeviceService() = default;
     DECLARE_INTERFACE_DESCRIPTOR(u"IMiscdeviceService");
-    virtual int32_t Vibrate(int32_t vibratorId, int32_t timeOut, int32_t usage) = 0;
+    virtual int32_t Vibrate(int32_t vibratorId, int32_t timeOut, int32_t usage, bool systemUsage) = 0;
     virtual int32_t PlayVibratorEffect(int32_t vibratorId, const std::string &effect,
-                                       int32_t loopCount, int32_t usage) = 0;
+                                       int32_t loopCount, int32_t usage, bool systemUsage) = 0;
 #ifdef OHOS_BUILD_ENABLE_VIBRATOR_CUSTOM
     virtual int32_t PlayVibratorCustom(int32_t vibratorId, const RawFileDescriptor &rawFd, int32_t usage,
-        const VibrateParameter &parameter) = 0;
+        bool systemUsage, const VibrateParameter &parameter) = 0;
 #endif // OHOS_BUILD_ENABLE_VIBRATOR_CUSTOM
     virtual int32_t StopVibrator(int32_t vibratorId) = 0;
     virtual int32_t StopVibrator(int32_t vibratorId, const std::string &mode) = 0;
@@ -50,10 +50,11 @@ public:
     virtual int32_t TurnOn(int32_t lightId, const LightColor &color, const LightAnimationIPC &animation) = 0;
     virtual int32_t TurnOff(int32_t lightId) = 0;
     virtual int32_t GetDelayTime(int32_t &delayTime) = 0;
-    virtual int32_t PlayPattern(const VibratePattern &pattern, int32_t usage, const VibrateParameter &parameter) = 0;
+    virtual int32_t PlayPattern(const VibratePattern &pattern, int32_t usage, bool systemUsage,
+        const VibrateParameter &parameter) = 0;
     virtual int32_t TransferClientRemoteObject(const sptr<IRemoteObject> &vibratorClient) = 0;
     virtual int32_t PlayPrimitiveEffect(int32_t vibratorId, const std::string &effect, int32_t intensity,
-        int32_t usage, int32_t count) = 0;
+        int32_t usage, bool systemUsage, int32_t count) = 0;
     virtual int32_t GetVibratorCapacity(VibratorCapacity &capacity) = 0;
 };
 } // namespace Sensors

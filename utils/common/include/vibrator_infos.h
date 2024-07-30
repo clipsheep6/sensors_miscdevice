@@ -124,6 +124,7 @@ struct VibrateInfo {
     int32_t pid = -1;
     int32_t uid = -1;
     int32_t usage = 0;
+    bool systemUsage = false;
     int32_t duration = 0;
     std::string effect;
     int32_t count = 0;

@@ -70,6 +70,7 @@ bool GetInt32Value(const napi_env &env, const napi_value &value, int32_t &result
 bool GetDoubleValue(const napi_env &env, const napi_value &value, double &result);
 bool GetInt64Value(const napi_env &env, const napi_value &value, int64_t &result);
 bool GetStringValue(const napi_env &env, const napi_value &value, string &result);
+bool GetPropertyBool(const napi_env &env, const napi_value &value, const std::string &type, bool &result);
 bool GetPropertyItem(const napi_env &env, const napi_value &value, const std::string &type, napi_value &item);
 bool GetPropertyString(const napi_env &env, const napi_value &value, const std::string &type, std::string &result);
 bool GetPropertyInt32(const napi_env &env, const napi_value &value, const std::string &type, int32_t &result);

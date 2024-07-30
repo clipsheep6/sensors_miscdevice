@@ -34,7 +34,7 @@ constexpr int32_t MAX_LIGHT_COUNT = 0XFF;
 MiscdeviceServiceProxy::MiscdeviceServiceProxy(const sptr<IRemoteObject> &impl) : IRemoteProxy<IMiscdeviceService>(impl)
 {}
 
-int32_t MiscdeviceServiceProxy::Vibrate(int32_t vibratorId, int32_t timeOut, int32_t usage)
+int32_t MiscdeviceServiceProxy::Vibrate(int32_t vibratorId, int32_t timeOut, int32_t usage, bool systemUsage)
 {
     MessageParcel data;
     if (!data.WriteInterfaceToken(MiscdeviceServiceProxy::GetDescriptor())) {
@@ -51,6 +51,10 @@ int32_t MiscdeviceServiceProxy::Vibrate(int32_t vibratorId, int32_t timeOut, int
     }
     if (!data.WriteInt32(usage)) {
         MISC_HILOGE("WriteUint32 usage failed");
+        return WRITE_MSG_ERR;
+    }
+    if (!data.WriteBool(systemUsage)) {
+        MISC_HILOGE("WritBool systemUsage failed");
         return WRITE_MSG_ERR;
     }
     sptr<IRemoteObject> remote = Remote();
@@ -93,7 +97,7 @@ int32_t MiscdeviceServiceProxy::StopVibrator(int32_t vibratorId)
 }
 
 int32_t MiscdeviceServiceProxy::PlayVibratorEffect(int32_t vibratorId, const std::string &effect,
-    int32_t loopCount, int32_t usage)
+    int32_t loopCount, int32_t usage, bool systemUsage)
 {
     MessageParcel data;
     if (!data.WriteInterfaceToken(MiscdeviceServiceProxy::GetDescriptor())) {
@@ -114,6 +118,10 @@ int32_t MiscdeviceServiceProxy::PlayVibratorEffect(int32_t vibratorId, const std
     }
     if (!data.WriteInt32(usage)) {
         MISC_HILOGE("Writeint32 usage failed");
+        return WRITE_MSG_ERR;
+    }
+    if (!data.WriteBool(systemUsage)) {
+        MISC_HILOGE("Writebool systemUsage failed");
         return WRITE_MSG_ERR;
     }
     sptr<IRemoteObject> remote = Remote();
@@ -191,7 +199,7 @@ int32_t MiscdeviceServiceProxy::IsSupportEffect(const std::string &effect, bool 
 
 #ifdef OHOS_BUILD_ENABLE_VIBRATOR_CUSTOM
 int32_t MiscdeviceServiceProxy::PlayVibratorCustom(int32_t vibratorId, const RawFileDescriptor &rawFd, int32_t usage,
-    const VibrateParameter &parameter)
+    bool systemUsage, const VibrateParameter &parameter)
 {
     MessageParcel data;
     if (!data.WriteInterfaceToken(MiscdeviceServiceProxy::GetDescriptor())) {
@@ -204,6 +212,10 @@ int32_t MiscdeviceServiceProxy::PlayVibratorCustom(int32_t vibratorId, const Raw
     }
     if (!data.WriteInt32(usage)) {
         MISC_HILOGE("Writeint32 usage failed");
+        return WRITE_MSG_ERR;
+    }
+    if (!data.WriteBool(systemUsage)) {
+        MISC_HILOGE("Writebool systemUsage failed");
         return WRITE_MSG_ERR;
     }
     if (!parameter.Marshalling(data)) {
@@ -359,7 +371,7 @@ int32_t MiscdeviceServiceProxy::GetDelayTime(int32_t &delayTime)
 }
 
 int32_t MiscdeviceServiceProxy::PlayPattern(const VibratePattern &pattern, int32_t usage,
-    const VibrateParameter &parameter)
+    bool systemUsage, const VibrateParameter &parameter)
 {
     MessageParcel data;
     if (!data.WriteInterfaceToken(MiscdeviceServiceProxy::GetDescriptor())) {
@@ -372,6 +384,10 @@ int32_t MiscdeviceServiceProxy::PlayPattern(const VibratePattern &pattern, int32
     }
     if (!data.WriteInt32(usage)) {
         MISC_HILOGE("WriteUint32 usage failed");
+        return WRITE_MSG_ERR;
+    }
+    if (!data.WriteBool(systemUsage)) {
+        MISC_HILOGE("WriteBool systemUsage failed");
         return WRITE_MSG_ERR;
     }
     if (!parameter.Marshalling(data)) {
@@ -418,7 +434,7 @@ int32_t MiscdeviceServiceProxy::TransferClientRemoteObject(const sptr<IRemoteObj
 }
 
 int32_t MiscdeviceServiceProxy::PlayPrimitiveEffect(int32_t vibratorId, const std::string &effect, int32_t intensity,
-    int32_t usage, int32_t count)
+    int32_t usage, bool systemUsage, int32_t count)
 {
     MessageParcel data;
     if (!data.WriteInterfaceToken(MiscdeviceServiceProxy::GetDescriptor())) {
@@ -439,6 +455,10 @@ int32_t MiscdeviceServiceProxy::PlayPrimitiveEffect(int32_t vibratorId, const st
     }
     if (!data.WriteInt32(usage)) {
         MISC_HILOGE("Writeint32 usage failed");
+        return WRITE_MSG_ERR;
+    }
+    if (!data.WriteBool(systemUsage)) {
+        MISC_HILOGE("WriteBool systemUsage failed");
         return WRITE_MSG_ERR;
     }
     if (!data.WriteInt32(count)) {

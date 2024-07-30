@@ -117,6 +117,16 @@ bool GetInt64Value(const napi_env &env, const napi_value &value, int64_t &result
     return true;
 }
 
+bool GetBoolValue(const napi_env &env, const napi_value &value, bool &result)
+{
+    CALL_LOG_ENTER;
+    napi_valuetype valuetype = napi_undefined;
+    CHKCF(napi_typeof(env, value, &valuetype) == napi_ok, "napi_typeof failed");
+    CHKCF((valuetype == napi_boolean), "Wrong argument type. bool expected");
+    CHKCF(napi_get_value_bool(env, value, &result) == napi_ok, "napi_get_value_bool failed");
+    return true;
+}
+
 bool GetStringValue(const napi_env &env, const napi_value &value, string &result)
 {
     CALL_LOG_ENTER;
@@ -203,6 +213,23 @@ bool GetPropertyInt64(const napi_env &env, const napi_value &value, const std::s
     CHKCF((napi_get_named_property(env, value, type.c_str(), &item) == napi_ok), "napi get property fail");
     if (!GetInt64Value(env, item, result)) {
         MISC_HILOGE("Get int value fail");
+        return false;
+    }
+    return true;
+}
+
+bool GetPropertyBool(const napi_env &env, const napi_value &value, const std::string &type, bool &result)
+{
+    bool exist = false;
+    napi_status status = napi_has_named_property(env, value, type.c_str(), &exist);
+    if ((status != napi_ok) || (!exist)) {
+        MISC_HILOGD("Can not find %{public}s property", type.c_str());
+        return false;
+    }
+    napi_value item = nullptr;
+    CHKCF((napi_get_named_property(env, value, type.c_str(), &item) == napi_ok), "napi get property fail");
+    if (!GetBoolValue(env, item, result)) {
+        MISC_HILOGE("Get bool value fail");
         return false;
     }
     return true;
