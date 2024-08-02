@@ -1,0 +1,64 @@
+{
+    "Metadata": {
+        "Version": 2,
+        "Created": "2022-04-15",
+        "Description": "Exported from RichTap Creator Editor InnerTest"
+    },
+    "PatternList": [
+        {
+            "AbsoluteTime": 19,
+            "Pattern": [
+                {
+                    "Event": {
+                        "Type": "continuous",
+                        "RelativeTime": 0,
+                        "Duration": 69,
+                        "Parameters": {
+                            "Intensity": 71,
+                            "Frequency": 90,
+                            "Curve": [
+                                {
+                                    "Time": 0,
+                                    "Intensity": 0,
+                                    "Frequency": -100
+                                },
+                                {
+                                    "Time": 13,
+                                    "Intensity": 0.09,
+                                    "Frequency": -83
+                                },
+                                {
+                                    "Time": 27,
+                                    "Intensity": 1,
+                                    "Frequency": -36
+                                },
+                                {
+                                    "Time": 68,
+                                    "Intensity": 0.1,
+                                    "Frequency": -58
+                                },
+                                {
+                                    "Time": 69,
+                                    "Intensity": 0,
+                                    "Frequency": -88
+                                }
+                            ]
+                        },
+                        "Index": 0
+                    }
+                },
+                {
+                    "Event": {
+                        "Type": "transient",
+                        "RelativeTime": 73,
+                        "Parameters": {
+                            "Intensity": 100,
+                            "Frequency": 61
+                        },
+                        "Index": 0
+                    }
+                }
+            ]
+        }
+    ]
+}

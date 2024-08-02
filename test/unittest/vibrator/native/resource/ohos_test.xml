@@ -28,6 +28,8 @@
             <option name="push" value="json_file/test_invalid_intensity.json -> /data/test/vibrator" src="res"/>
             <option name="push" value="json_file/test_invalid_startTime.json -> /data/test/vibrator" src="res"/>
             <option name="push" value="json_file/test_invalid_type.json -> /data/test/vibrator" src="res"/>
+            <option name="push" value="json_file/Jet_N2O.he -> /data/test/vibrator" src="res"/>
+            <option name="push" value="json_file/Racing_Start.he -> /data/test/vibrator" src="res"/>
         </preparer>
     </target>
 </configuration>

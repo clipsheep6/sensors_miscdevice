@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021-2023 Huawei Device Co., Ltd.
+ * Copyright (c) 2021-2024 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -647,6 +647,41 @@ HWTEST_F(VibratorAgentTest, PlayVibratorCustom_021, TestSize.Level1)
             int32_t ret = PlayVibratorCustom(fileDescriptor.fd, 0, statbuf.st_size);
             ASSERT_EQ(ret, 0);
         }
+    } else {
+        ASSERT_EQ(0, 0);
+    }
+    Cancel();
+}
+HWTEST_F(VibratorAgentTest, PlayVibratorCustom_022, TestSize.Level1)
+{
+    MISC_HILOGI("PlayVibratorCustom_022 in");
+    if (IsSupportVibratorCustom()) {
+        FileDescriptor fileDescriptor("/data/test/vibrator/Jet_N2O.he");
+        MISC_HILOGD("Test fd:%{public}d", fileDescriptor.fd);
+        struct stat64 statbuf = { 0 };
+        if (fstat64(fileDescriptor.fd, &statbuf) == 0) {
+            int32_t ret = PlayVibratorCustom(fileDescriptor.fd, 0, statbuf.st_size);
+            ASSERT_EQ(ret, 0);
+        }
+        std::this_thread::sleep_for(std::chrono::milliseconds(TIME_WAIT_FOR_OP));
+    } else {
+        ASSERT_EQ(0, 0);
+    }
+    Cancel();
+}
+
+HWTEST_F(VibratorAgentTest, PlayVibratorCustom_023, TestSize.Level1)
+{
+    MISC_HILOGI("PlayVibratorCustom_023 in");
+    if (IsSupportVibratorCustom()) {
+        FileDescriptor fileDescriptor("/data/test/vibrator/Racing_Start.he");
+        MISC_HILOGD("Test fd:%{public}d", fileDescriptor.fd);
+        struct stat64 statbuf = { 0 };
+        if (fstat64(fileDescriptor.fd, &statbuf) == 0) {
+            int32_t ret = PlayVibratorCustom(fileDescriptor.fd, 0, statbuf.st_size);
+            ASSERT_EQ(ret, 0);
+        }
+        std::this_thread::sleep_for(std::chrono::milliseconds(TIME_WAIT_FOR_OP));
     } else {
         ASSERT_EQ(0, 0);
     }
