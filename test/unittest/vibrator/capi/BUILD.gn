@@ -22,6 +22,7 @@ ohos_unittest("NativeVibratorTest") {
   module_out_path = module_output_path
 
   include_dirs = [
+    "$SUBSYSTEM_DIR/interfaces/inner_api/vibrator",
     "$SUBSYSTEM_DIR/interfaces/kits/c",
     "$SUBSYSTEM_DIR/utils/common/include",
   ]
@@ -39,7 +40,10 @@ ohos_unittest("NativeVibratorTest") {
     "ipc:ipc_single",
   ]
 
-  deps = [ "$SUBSYSTEM_DIR/frameworks/capi:ohvibrator" ]
+  deps = [
+    "$SUBSYSTEM_DIR/frameworks/capi:ohvibrator",
+    "$SUBSYSTEM_DIR/frameworks/native/vibrator:vibrator_target",
+  ]
   resource_config_file =
       "$SUBSYSTEM_DIR/test/unittest/vibrator/capi/resource/ohos_test.xml"
 }
