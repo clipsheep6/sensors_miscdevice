@@ -1,0 +1,52 @@
+name: Mirror Gitee Upstream Master
+
+on:
+  schedule:
+    - cron: '0 2 * * *'  # 每天凌晨2点执行
+  workflow_dispatch:  # 允许手动触发
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout master only
+        uses: actions/checkout@v3
+        with:
+          persist-credentials: false
+          ref: master
+
+      - name: Set up Git
+        run: |
+          git config --global user.name "GitHub Action"
+          git config --global user.email "action@github.com"
+          git remote set-url origin https://x-access-token:${{ secrets.PAT_TOKEN }}@github.com/${{ github.repository }}.git
+
+      - name: Add upstream repository
+        run: git remote add upstream https://gitee.com/openharmony/sensors_miscdevice.git
+
+      - name: Fetch upstream master
+        run: git fetch upstream master
+
+      - name: Reset master branch to upstream
+        run: |
+          git checkout master
+          git reset --hard upstream/master
+          
+          # Restore GitHub Actions directory to prevent deletion
+          git checkout origin/master -- .github/
+          
+          git add .github/
+          git commit -m "Preserve GitHub Actions files"
+          
+          git push origin master --force
+        env:
+          GITHUB_TOKEN: ${{ secrets.PAT_TOKEN }}
+
+      - name: Clean up non-master branches
+        run: |
+          # Delete all local branches except master
+          git branch | grep -v "master" | grep -v '\*' | xargs -r git branch -D
+          
+          # Delete all remote branches except master and upstream/master
+          git branch -r | grep -v "origin/master" | grep -v "upstream/master" | sed 's/origin\///' | xargs -r -I {} git push origin --delete {}
